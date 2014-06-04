@@ -1,0 +1,29 @@
+{
+  "name": "dom-bindings",
+  "description": "Takes binding declarations and returns key-tree-store of functions that can be used to apply those bindings.",
+  "version": "0.0.0",
+  "author": "'Henrik Joreteg' <henrik@andyet.net>",
+  "bugs": {
+    "url": "https://github.com/henrikjoreteg/dom-bindings/issues"
+  },
+  "dependencies": {
+    "ampersand-dom": "~0.1.0",
+    "is-array": "~1.0.1",
+    "key-tree-store": "~0.2.0"
+  },
+  "homepage": "https://github.com/henrikjoreteg/dom-bindings",
+  "keywords": [
+    "dom",
+    "bindings",
+    "browser"
+  ],
+  "license": "MIT",
+  "main": "dom-bindings.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/henrikjoreteg/dom-bindings"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
