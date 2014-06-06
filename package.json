@@ -1,7 +1,7 @@
 {
   "name": "dom-bindings",
   "description": "Takes binding declarations and returns key-tree-store of functions that can be used to apply those bindings.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "'Henrik Joreteg' <henrik@andyet.net>",
   "bugs": {
     "url": "https://github.com/henrikjoreteg/dom-bindings/issues"
