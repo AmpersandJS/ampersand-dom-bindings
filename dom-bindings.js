@@ -35,33 +35,33 @@ module.exports = function (bindings) {
 var slice = Array.prototype.slice;
 
 function getMatches(el, selector, func) {
+    if (selector === '') return [el];
     return slice.call(el.querySelectorAll(selector));
-}
-
-// throw helpful error to catch typos, etc.
-function ensureSelector(binding) {
-    // throw helpful error to catch typos, etc.
-    if (!binding.selector && !binding.role) {
-        throw Error('bindings must have either a "selector" or "role"');
-    }
 }
 
 function getBindingFunc(binding) {
     var type = binding.type || 'text';
-    var selector = binding.selector || '[role="' + binding.role + '"]';
+    var hasSelector = true;
+    var selector = (function () {
+        if (typeof binding.selector === 'string') {
+            return binding.selector;
+        } else if (binding.role) {
+            return '[role="' + binding.role + '"]';
+        } else {
+            return '';
+        }
+    })();
 
     // storage variable for previous if relevant
     var previousValue = '';
 
     if (type === 'text') {
-        ensureSelector(binding);
         return function (el, value) {
             getMatches(el, selector).forEach(function (match) {
                 dom.text(match, value);
             });
         };
     } else if (type === 'class') {
-        ensureSelector(binding);
         return function (el, value) {
             getMatches(el, selector).forEach(function (match) {
                 dom.switchClass(match, previousValue, value);
@@ -69,7 +69,6 @@ function getBindingFunc(binding) {
             previousValue = value;
         };
     } else if (type === 'attribute') {
-        ensureSelector(binding);
         if (!binding.name) throw Error('attribute bindings must have a "name"');
         return function (el, value) {
             getMatches(el, selector).forEach(function (match) {
@@ -78,9 +77,8 @@ function getBindingFunc(binding) {
             previousValue = value;
         };
     } else if (type === 'booleanClass') {
-        ensureSelector(binding);
         // if there's a `no` case this is actually a switch
-        if (bindings.no) {
+        if (binding.no) {
             return function (el, value, keyName) {
                 var name = binding.name || binding.yes || keyName;
                 getMatches(el, selector).forEach(function (match) {
@@ -95,28 +93,27 @@ function getBindingFunc(binding) {
                 });
             };
         }
-    } else if (type === 'booleanAttr') {
-        ensureSelector(binding);
-        return function (el, value) {
-            if (!binding.name) throw Error('booleanAttr bindings must have a "name"');
+    } else if (type === 'booleanAttribute') {
+        return function (el, value, keyName) {
+            var name = binding.name || keyName;
             getMatches(el, selector).forEach(function (match) {
+                if (!name) debugger;
                 dom[value ? 'addAttribute' : 'removeAttribute'](match, name);
             });
         };
     } else if (type === 'toggle') {
         // this doesn't require a selector since we can pass yes/no selectors
-        if (bindings.yes && bindings.no) {
+        if (binding.yes && binding.no) {
             return function (el, value) {
-                getMatches(el, bindings.yes).forEach(function (match) {
+                getMatches(el, binding.yes).forEach(function (match) {
                     dom[value ? 'show' : 'hide'](match);
                 });
-                getMatches(el, bindings.no).forEach(function (match) {
+                getMatches(el, binding.no).forEach(function (match) {
                     dom[value ? 'hide' : 'show'](match);
                 });
             };
         } else {
-            ensureSelector(binding);
-            return function (el, value) {
+                return function (el, value) {
                 getMatches(el, selector).forEach(function (match) {
                     dom[value ? 'show' : 'hide'](match);
                 });
@@ -132,11 +129,12 @@ function getBindingFunc(binding) {
             }
         };
     } else if (type === 'innerHTML') {
-        ensureSelector(binding);
         return function (el, value) {
             getMatches(el, selector).forEach(function (match) {
                 dom.html(match, value);
             });
         };
+    } else {
+        throw new Error('no such binding type: ' + type);
     }
 }

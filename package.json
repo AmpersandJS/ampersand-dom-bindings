@@ -7,9 +7,9 @@
     "url": "https://github.com/henrikjoreteg/dom-bindings/issues"
   },
   "dependencies": {
-    "ampersand-dom": "~0.1.0",
+    "ampersand-dom": "~0.1.1",
     "is-array": "~1.0.1",
-    "key-tree-store": "~0.2.0"
+    "key-tree-store": "~0.3.0"
   },
   "homepage": "https://github.com/henrikjoreteg/dom-bindings",
   "keywords": [
