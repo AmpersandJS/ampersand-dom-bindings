@@ -97,7 +97,6 @@ function getBindingFunc(binding) {
         return function (el, value, keyName) {
             var name = binding.name || keyName;
             getMatches(el, selector).forEach(function (match) {
-                if (!name) debugger;
                 dom[value ? 'addAttribute' : 'removeAttribute'](match, name);
             });
         };
