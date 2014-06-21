@@ -1,7 +1,5 @@
 # dom-bindings
 
-** WARNING ** Still very much a PROTOTYPE. Do not use :)
-
 Takes binding declarations as described below and returns [key-tree-store](https://github.com/HenrikJoreteg/key-tree-store) of functions that can be used to apply those bindings to a DOM tree.
 
 
@@ -76,13 +74,13 @@ add/removes class based on boolean interpretation of property name.
 }
 ```
 
-### booleanAttr
+### booleanAttribute
 
 toggles whole attribute on the element (think `checked`) based on boolean interpretation of property name.
 
 ```js
 'model.isAwesome': {
-    type: 'booleanAttr',
+    type: 'booleanAttribute',
     selector: '#something', // or role
     name: 'checked'
 }
