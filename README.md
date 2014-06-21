@@ -2,22 +2,12 @@
 
 Takes binding declarations as described below and returns [key-tree-store](https://github.com/HenrikJoreteg/key-tree-store) of functions that can be used to apply those bindings to a DOM tree.
 
+The returned functions should be called with these arguments: The root element, the current value of the property, and a name for the binding types where that is relevant.
 
 ## install
 
 ```
 npm install dom-bindings
-```
-
-## example
-
-```javascript
-var domBindings = require('dom-bindings');
-
-var store = domBindings({
-    
-})
-
 ```
 
 ## Binding types
