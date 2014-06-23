@@ -142,8 +142,6 @@ test('booleanAttribute bindings', function (t) {
 
 // TODO: tests for switch
 
-// TODO: tests for inner HTML
-
 // TODO: tests for multiple bindings in one declaration
 
 

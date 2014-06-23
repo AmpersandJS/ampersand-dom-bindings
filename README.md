@@ -110,17 +110,6 @@ Toggles existance of multiple items based on value of property.
 }
 ```
 
-### innerHTML
-
-renders innerHTML, can be a string or DOM, based on property value of model
-
-```js
-'model.key': {
-    type: 'innerHTML',
-    selector: '#something' // or role
-}
-``` 
-
 
 ## Handling multiple bindings for a given key
 
