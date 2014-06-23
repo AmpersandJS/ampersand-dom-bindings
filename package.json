@@ -1,10 +1,10 @@
 {
-  "name": "dom-bindings",
+  "name": "ampersand-dom-bindings",
   "description": "Takes binding declarations and returns key-tree-store of functions that can be used to apply those bindings.",
-  "version": "2.0.0",
+  "version": "0.0.0",
   "author": "'Henrik Joreteg' <henrik@andyet.net>",
   "bugs": {
-    "url": "https://github.com/henrikjoreteg/dom-bindings/issues"
+    "url": "https://github.com/ampersandjs/ampersand-dom-bindings/issues"
   },
   "dependencies": {
     "ampersand-dom": "^1.2.0",
@@ -18,17 +18,17 @@
     "tape": "^2.13.2",
     "tape-run": "~0.1.1"
   },
-  "homepage": "https://github.com/henrikjoreteg/dom-bindings",
+  "homepage": "https://github.com/ampersandjs/ampersand-dom-bindings",
   "keywords": [
     "dom",
     "bindings",
     "browser"
   ],
   "license": "MIT",
-  "main": "dom-bindings.js",
+  "main": "ampersand-dom-bindings.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/henrikjoreteg/dom-bindings"
+    "url": "git://github.com/ampersandjs/ampersand-dom-bindings"
   },
   "scripts": {
     "start": "run-browser test/index.js",

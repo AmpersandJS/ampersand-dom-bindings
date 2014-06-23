@@ -1,5 +1,5 @@
 var test = require('tape');
-var domBindings = require('../dom-bindings');
+var domBindings = require('../ampersand-dom-bindings');
 var dom = require('ampersand-dom');
 
 

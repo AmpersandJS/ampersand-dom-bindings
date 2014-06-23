@@ -1,6 +1,12 @@
-# dom-bindings
+# ampersand-dom-bindings
+
+<!-- starthide -->
+Part of the [Ampersand.js toolkit](http://ampersandjs.com) for building clientside applications.
+<!-- endhide -->
 
 Takes binding declarations as described below and returns [key-tree-store](https://github.com/HenrikJoreteg/key-tree-store) of functions that can be used to apply those bindings to a DOM tree.
+
+[ampersand-view](http://ampersandjs.com/docs#ampersand-view) use this for declarative bindings.
 
 The returned functions should be called with these arguments: The root element, the current value of the property, and a name for the binding types where that is relevant.
 
@@ -212,10 +218,6 @@ module.exports = View.extend({
     }
 });
 ```
-
-## credits
-
-If you like this follow [@HenrikJoreteg](http://twitter.com/henrikjoreteg) on twitter.
 
 ## license
 
