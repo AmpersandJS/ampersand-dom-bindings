@@ -13,7 +13,7 @@ The returned functions should be called with these arguments: The root element, 
 ## install
 
 ```
-npm install dom-bindings
+npm install ampersand-dom-bindings
 ```
 
 ## Binding types
