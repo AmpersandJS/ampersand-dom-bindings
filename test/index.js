@@ -138,6 +138,26 @@ test('booleanAttribute bindings', function (t) {
     t.end();
 });
 
+test('innerHTML bindings', function (t) {
+    var el = getEl();
+    var bindings = domBindings({
+        'model': {
+            type: 'innerHTML',
+            selector: ''
+        }
+    });
+
+    t.notOk(el.innerHTML, 'should be empty to start');
+
+    bindings.run('', null, el, '<span></span>');
+    t.equal(el.innerHTML, '<span></span>', 'should hav a span now');
+
+    bindings.run('', null, el, '');
+    t.notOk(el.innerHTML, 'should be empty again');
+
+    t.end();
+});
+
 // TODO: tests for toggle
 
 // TODO: tests for switch

@@ -127,6 +127,12 @@ function getBindingFunc(binding) {
                 });
             }
         };
+    } else if (type === 'innerHTML') {
+        return function (el, value) {
+            getMatches(el, selector).forEach(function (match) {
+                dom.html(match, value);
+            });
+        };
     } else {
         throw new Error('no such binding type: ' + type);
     }
