@@ -76,6 +76,39 @@ test('attribute bindings', function (t) {
     t.end();
 });
 
+test('value bindings', function (t) {
+    var input = getEl('<input class="thing" type="text">');
+    var select = getEl('<select class="thing"><option value=""></option><option value="hello"></option><option value="string"></option></select>');
+    var textarea = getEl('<textarea class="thing"></textarea>');
+
+    [input, select, textarea].forEach(function (el) {
+        var bindings = domBindings({
+            'model': {
+                type: 'value',
+                selector: '.thing'
+            }
+        });
+
+        t.equal(el.firstChild.value, '');
+        bindings.run('model', null, el, 'hello');
+        t.equal(el.firstChild.value, 'hello');
+
+        bindings.run('model', null, el, 'string');
+        t.equal(el.firstChild.value, 'string');
+
+        bindings.run('model', null, el, void 0);
+        t.equal(el.firstChild.value, '');
+
+        bindings.run('model', null, el, null);
+        t.equal(el.firstChild.value, '');
+
+        bindings.run('model', null, el, NaN);
+        t.equal(el.firstChild.value, '');
+    });
+
+    t.end();
+});
+
 /*
 ### booleanClass
 
