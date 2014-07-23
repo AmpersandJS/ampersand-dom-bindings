@@ -53,6 +53,17 @@ sets the whole attribute to match value of property. treats `undefined`, `null`,
 }
 ```
 
+### value
+
+sets the value of the element to match value of the property. works well for `input`, `select`, and `textarea` elements. treats `undefined`, `null`, and `NaN` as `''` (empty string).
+    
+```js
+'model.key': {
+    type: 'value',
+    selector: '#something', // or role
+}
+```
+
 ### booleanClass
 
 add/removes class based on boolean interpretation of property name.

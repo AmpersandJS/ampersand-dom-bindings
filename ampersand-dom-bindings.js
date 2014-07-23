@@ -76,6 +76,14 @@ function getBindingFunc(binding) {
             });
             previousValue = value;
         };
+    } else if (type === 'value') {
+        return function (el, value) {
+            getMatches(el, selector).forEach(function (match) {
+                if (!value && value !== 0) value = '';
+                match.value = value;
+            });
+            previousValue = value;
+        };
     } else if (type === 'booleanClass') {
         // if there's a `no` case this is actually a switch
         if (binding.no) {
