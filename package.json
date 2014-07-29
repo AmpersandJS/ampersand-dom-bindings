@@ -9,7 +9,8 @@
   "dependencies": {
     "ampersand-dom": "^1.2.0",
     "is-array": "^1.0.1",
-    "key-tree-store": "^1.2.0"
+    "key-tree-store": "^1.2.0",
+    "matches-selector": "^1.0.0"
   },
   "devDependencies": {
     "browserify": "",

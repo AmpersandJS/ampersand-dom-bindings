@@ -158,6 +158,27 @@ test('innerHTML bindings', function (t) {
     t.end();
 });
 
+test('ensure selector matches root element', function (t) {
+    var el = getEl();
+    var bindings = domBindings({
+        'model': {
+            type: 'innerHTML',
+            selector: 'div' //select the root element
+        }
+    });
+
+    t.notOk(el.innerHTML, 'should be empty to start');
+
+    bindings.run('', null, el, '<span></span>');
+    t.equal(el.innerHTML, '<span></span>', 'should hav a span now');
+
+    bindings.run('', null, el, '');
+    t.notOk(el.innerHTML, 'should be empty again');
+
+    t.end();
+
+});
+
 // TODO: tests for toggle
 
 // TODO: tests for switch
