@@ -1,6 +1,7 @@
 var Store = require('key-tree-store');
 var isArray = require('is-array');
 var dom = require('ampersand-dom');
+var matchesSelector = require('matches-selector');
 
 
 // returns a key-tree-store of functions
@@ -36,6 +37,7 @@ var slice = Array.prototype.slice;
 
 function getMatches(el, selector, func) {
     if (selector === '') return [el];
+    if (matchesSelector(el, selector)) return [el];
     return slice.call(el.querySelectorAll(selector));
 }
 
