@@ -90,9 +90,12 @@ function getBindingFunc(binding) {
         // if there's a `no` case this is actually a switch
         if (binding.no) {
             return function (el, value, keyName) {
-                var name = binding.name || binding.yes || keyName;
+                var yes = binding.name || binding.yes || keyName;
+                var no = binding.no;
                 getMatches(el, selector).forEach(function (match) {
-                    dom.switchClass(match, binding.no, name);
+                    var prevClass = value ? no : yes;
+                    var newClass = value ? yes : no;
+                    dom.switchClass(match, prevClass, newClass);
                 });
             };
         } else {
