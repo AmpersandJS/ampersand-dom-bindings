@@ -150,6 +150,31 @@ test('booleanClass bindings', function (t) {
     t.end();
 });
 
+test('booleanClass yes/no bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanClass',
+            selector: '.thing',
+            yes: 'awesome',
+            no: 'not-awesome'
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'), 'should not start with yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'not-awesome'), 'should not start with no class');
+
+    bindings.run('', null, el, true);
+    t.ok(dom.hasClass(el.firstChild, 'awesome'), 'should have yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'not-awesome'), 'should not have no class');
+
+    bindings.run('', null, el, false);
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'), 'should not have yes class');
+    t.ok(dom.hasClass(el.firstChild, 'not-awesome'), 'should have no class');
+
+    t.end();
+});
+
 test('booleanAttribute bindings', function (t) {
     var el = getEl('<input type="checkbox" class="thing" role="some-role">');
     var bindings = domBindings({
