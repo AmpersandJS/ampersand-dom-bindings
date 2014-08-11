@@ -175,6 +175,64 @@ test('booleanClass yes/no bindings', function (t) {
     t.end();
 });
 
+test('booleanClass array bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanClass',
+            selector: '.thing',
+            name: ['class1', 'class2']
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'class1'));
+    t.notOk(dom.hasClass(el.firstChild, 'class2'));
+
+    bindings.run('', null, el, true);
+    t.ok(dom.hasClass(el.firstChild, 'class1'));
+    t.ok(dom.hasClass(el.firstChild, 'class2'));
+
+    bindings.run('', null, el, false);
+    t.notOk(dom.hasClass(el.firstChild, 'class1'));
+    t.notOk(dom.hasClass(el.firstChild, 'class2'));
+
+    t.end();
+});
+
+test('booleanClass yes/no array bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanClass',
+            selector: '.thing',
+            yes: ['awesome', 'very-awesome', 'super-awesome'],
+            no: ['not-awesome', 'very-not-awesome']
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'), 'should not start with yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-awesome'), 'should not start with no class');
+    t.notOk(dom.hasClass(el.firstChild, 'super-awesome'), 'should not start with no class');
+    t.notOk(dom.hasClass(el.firstChild, 'not-awesome'), 'should not start with yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-not-awesome'), 'should not start with no class');
+
+    bindings.run('', null, el, true);
+    t.ok(dom.hasClass(el.firstChild, 'awesome'), 'should have yes class');
+    t.ok(dom.hasClass(el.firstChild, 'very-awesome'), 'should have yes class');
+    t.ok(dom.hasClass(el.firstChild, 'super-awesome'), 'should have yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'not-awesome'), 'should not have no class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-not-awesome'), 'should not have no class');
+
+    bindings.run('', null, el, false);
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'), 'should not have yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-awesome'), 'should not have yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'super-awesome'), 'should not have yes class');
+    t.ok(dom.hasClass(el.firstChild, 'not-awesome'), 'should have no class');
+    t.ok(dom.hasClass(el.firstChild, 'very-not-awesome'), 'should have no class');
+
+    t.end();
+});
+
 test('booleanAttribute bindings', function (t) {
     var el = getEl('<input type="checkbox" class="thing" role="some-role">');
     var bindings = domBindings({
@@ -192,6 +250,30 @@ test('booleanAttribute bindings', function (t) {
 
     bindings.run('', null, el, false, 'checked');
     t.notOk(el.firstChild.checked, 'should not be checked');
+
+    t.end();
+});
+
+test('booleanAttribute array bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanAttribute',
+            selector: '.thing',
+            name: ['disabled', 'readOnly']
+        }
+    });
+
+    t.notOk(el.firstChild.disabled, 'should not be disabled to start');
+    t.notOk(el.firstChild.readOnly, 'should not be readOnly to start');
+
+    bindings.run('', null, el, true, 'disabled, readOnly');
+    t.ok(el.firstChild.disabled, 'should disabled');
+    t.ok(el.firstChild.readOnly, 'should readOnly');
+
+    bindings.run('', null, el, false, 'disabled, readOnly');
+    t.notOk(el.firstChild.disabled, 'should not be disabled');
+    t.notOk(el.firstChild.readOnly, 'should not be readOnly');
 
     t.end();
 });

@@ -41,6 +41,10 @@ function getMatches(el, selector, func) {
     return slice.call(el.querySelectorAll(selector));
 }
 
+function makeArray(val) {
+    return Array.isArray(val) ? val : [val];
+}
+
 function getBindingFunc(binding) {
     var type = binding.type || 'text';
     var hasSelector = true;
@@ -90,27 +94,36 @@ function getBindingFunc(binding) {
         // if there's a `no` case this is actually a switch
         if (binding.no) {
             return function (el, value, keyName) {
-                var yes = binding.name || binding.yes || keyName;
-                var no = binding.no;
+                var yes = makeArray(binding.name || binding.yes || keyName);
+                var no = makeArray(binding.no);
+                var prevClass = value ? no : yes;
+                var newClass = value ? yes : no;
                 getMatches(el, selector).forEach(function (match) {
-                    var prevClass = value ? no : yes;
-                    var newClass = value ? yes : no;
-                    dom.switchClass(match, prevClass, newClass);
+                    prevClass.forEach(function (pc) {
+                        dom.removeClass(match, pc);
+                    });
+                    newClass.forEach(function (nc) {
+                        dom.addClass(match, nc);
+                    });
                 });
             };
         } else {
             return function (el, value, keyName) {
-                var name = binding.name || keyName;
+                var name = makeArray(binding.name || keyName);
                 getMatches(el, selector).forEach(function (match) {
-                    dom[value ? 'addClass' : 'removeClass'](match, name);
+                    name.forEach(function (className) {
+                        dom[value ? 'addClass' : 'removeClass'](match, className);
+                    });
                 });
             };
         }
     } else if (type === 'booleanAttribute') {
         return function (el, value, keyName) {
-            var name = binding.name || keyName;
+            var name = makeArray(binding.name || keyName);
             getMatches(el, selector).forEach(function (match) {
-                dom[value ? 'addAttribute' : 'removeAttribute'](match, name);
+                name.forEach(function (attr) {
+                    dom[value ? 'addAttribute' : 'removeAttribute'](match, attr);
+                });
             });
         };
     } else if (type === 'toggle') {
