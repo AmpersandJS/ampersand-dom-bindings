@@ -340,8 +340,54 @@ test('ensure selector matches root element', function (t) {
     t.notOk(el.innerHTML, 'should be empty again');
 
     t.end();
-
 });
+
+test('ensure commas work in selectors', function (t) {
+    var el = getEl('<span class="thing"></span><span class="another-thing"></span>');
+    var bindings = domBindings({
+        'model': {
+            type: 'class',
+            selector: '.thing, .another-thing'
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'hello'));
+    t.notOk(dom.hasClass(el.lastChild, 'hello'));
+
+    bindings.run('model', null, el, 'hello');
+    t.ok(dom.hasClass(el.firstChild, 'hello'));
+    t.ok(dom.hasClass(el.lastChild, 'hello'));
+
+    bindings.run('model', null, el, 'string');
+    t.ok(dom.hasClass(el.firstChild, 'string'));
+    t.ok(dom.hasClass(el.lastChild, 'string'));
+    t.notOk(dom.hasClass(el.firstChild, 'hello'));
+    t.notOk(dom.hasClass(el.lastChild, 'hello'));
+
+    t.end();
+});
+
+test('selector will find root *and* children', function (t) {
+    var el = getEl('<div></div><div></div>');
+    var bindings = domBindings({
+        'model': {
+            type: 'class',
+            selector: 'div' // Root and children are all divs
+        }
+    });
+
+    t.notOk(dom.hasClass(el, 'hello'));
+    t.notOk(dom.hasClass(el.firstChild, 'hello'));
+    t.notOk(dom.hasClass(el.lastChild, 'hello'));
+
+    bindings.run('model', null, el, 'hello');
+    t.ok(dom.hasClass(el, 'hello'));
+    t.ok(dom.hasClass(el.firstChild, 'hello'));
+    t.ok(dom.hasClass(el.lastChild, 'hello'));
+
+    t.end();
+});
+
 
 // TODO: tests for toggle
 

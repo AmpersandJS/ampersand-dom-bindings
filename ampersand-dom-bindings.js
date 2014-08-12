@@ -37,8 +37,9 @@ var slice = Array.prototype.slice;
 
 function getMatches(el, selector, func) {
     if (selector === '') return [el];
-    if (matchesSelector(el, selector)) return [el];
-    return slice.call(el.querySelectorAll(selector));
+    var matches = [];
+    if (matchesSelector(el, selector)) matches.push(el);
+    return matches.concat(slice.call(el.querySelectorAll(selector)));
 }
 
 function makeArray(val) {
