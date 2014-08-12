@@ -37,8 +37,13 @@ var slice = Array.prototype.slice;
 
 function getMatches(el, selector, func) {
     if (selector === '') return [el];
-    if (matchesSelector(el, selector)) return [el];
-    return slice.call(el.querySelectorAll(selector));
+    var matches = [];
+    if (matchesSelector(el, selector)) matches.push(el);
+    return matches.concat(slice.call(el.querySelectorAll(selector)));
+}
+
+function makeArray(val) {
+    return Array.isArray(val) ? val : [val];
 }
 
 function getBindingFunc(binding) {
@@ -73,8 +78,11 @@ function getBindingFunc(binding) {
     } else if (type === 'attribute') {
         if (!binding.name) throw Error('attribute bindings must have a "name"');
         return function (el, value) {
+            var names = makeArray(binding.name);
             getMatches(el, selector).forEach(function (match) {
-                dom.setAttribute(match, binding.name, value);
+                names.forEach(function (name) {
+                    dom.setAttribute(match, name, value);
+                });
             });
             previousValue = value;
         };
@@ -90,27 +98,36 @@ function getBindingFunc(binding) {
         // if there's a `no` case this is actually a switch
         if (binding.no) {
             return function (el, value, keyName) {
-                var yes = binding.name || binding.yes || keyName;
-                var no = binding.no;
+                var yes = makeArray(binding.name || binding.yes || keyName);
+                var no = makeArray(binding.no);
+                var prevClass = value ? no : yes;
+                var newClass = value ? yes : no;
                 getMatches(el, selector).forEach(function (match) {
-                    var prevClass = value ? no : yes;
-                    var newClass = value ? yes : no;
-                    dom.switchClass(match, prevClass, newClass);
+                    prevClass.forEach(function (pc) {
+                        dom.removeClass(match, pc);
+                    });
+                    newClass.forEach(function (nc) {
+                        dom.addClass(match, nc);
+                    });
                 });
             };
         } else {
             return function (el, value, keyName) {
-                var name = binding.name || keyName;
+                var name = makeArray(binding.name || keyName);
                 getMatches(el, selector).forEach(function (match) {
-                    dom[value ? 'addClass' : 'removeClass'](match, name);
+                    name.forEach(function (className) {
+                        dom[value ? 'addClass' : 'removeClass'](match, className);
+                    });
                 });
             };
         }
     } else if (type === 'booleanAttribute') {
         return function (el, value, keyName) {
-            var name = binding.name || keyName;
+            var name = makeArray(binding.name || keyName);
             getMatches(el, selector).forEach(function (match) {
-                dom[value ? 'addAttribute' : 'removeAttribute'](match, name);
+                name.forEach(function (attr) {
+                    dom[value ? 'addAttribute' : 'removeAttribute'](match, attr);
+                });
             });
         };
     } else if (type === 'toggle') {

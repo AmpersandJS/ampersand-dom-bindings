@@ -76,6 +76,30 @@ test('attribute bindings', function (t) {
     t.end();
 });
 
+test('attribute array bindings', function (t) {
+    var el = getEl('<span class="thing" role="some-role"></span>');
+    var bindings = domBindings({
+        'model': {
+            type: 'attribute',
+            selector: '.thing',
+            name: ['height', 'width']
+        }
+    });
+
+    t.equal(el.firstChild.getAttribute('height'), null);
+    t.equal(el.firstChild.getAttribute('width'), null);
+
+    bindings.run('model', null, el, '100');
+    t.equal(el.firstChild.getAttribute('height'), '100');
+    t.equal(el.firstChild.getAttribute('width'), '100');
+
+    bindings.run('model', null, el, '200');
+    t.equal(el.firstChild.getAttribute('height'), '200');
+    t.equal(el.firstChild.getAttribute('width'), '200');
+
+    t.end();
+});
+
 test('value bindings', function (t) {
     var input = getEl('<input class="thing" type="text">');
     var select = getEl('<select class="thing"><option value=""></option><option value="hello"></option><option value="string"></option></select>');
@@ -175,6 +199,64 @@ test('booleanClass yes/no bindings', function (t) {
     t.end();
 });
 
+test('booleanClass array bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanClass',
+            selector: '.thing',
+            name: ['class1', 'class2']
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'class1'));
+    t.notOk(dom.hasClass(el.firstChild, 'class2'));
+
+    bindings.run('', null, el, true);
+    t.ok(dom.hasClass(el.firstChild, 'class1'));
+    t.ok(dom.hasClass(el.firstChild, 'class2'));
+
+    bindings.run('', null, el, false);
+    t.notOk(dom.hasClass(el.firstChild, 'class1'));
+    t.notOk(dom.hasClass(el.firstChild, 'class2'));
+
+    t.end();
+});
+
+test('booleanClass yes/no array bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanClass',
+            selector: '.thing',
+            yes: ['awesome', 'very-awesome', 'super-awesome'],
+            no: ['not-awesome', 'very-not-awesome']
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'), 'should not start with yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-awesome'), 'should not start with no class');
+    t.notOk(dom.hasClass(el.firstChild, 'super-awesome'), 'should not start with no class');
+    t.notOk(dom.hasClass(el.firstChild, 'not-awesome'), 'should not start with yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-not-awesome'), 'should not start with no class');
+
+    bindings.run('', null, el, true);
+    t.ok(dom.hasClass(el.firstChild, 'awesome'), 'should have yes class');
+    t.ok(dom.hasClass(el.firstChild, 'very-awesome'), 'should have yes class');
+    t.ok(dom.hasClass(el.firstChild, 'super-awesome'), 'should have yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'not-awesome'), 'should not have no class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-not-awesome'), 'should not have no class');
+
+    bindings.run('', null, el, false);
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'), 'should not have yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'very-awesome'), 'should not have yes class');
+    t.notOk(dom.hasClass(el.firstChild, 'super-awesome'), 'should not have yes class');
+    t.ok(dom.hasClass(el.firstChild, 'not-awesome'), 'should have no class');
+    t.ok(dom.hasClass(el.firstChild, 'very-not-awesome'), 'should have no class');
+
+    t.end();
+});
+
 test('booleanAttribute bindings', function (t) {
     var el = getEl('<input type="checkbox" class="thing" role="some-role">');
     var bindings = domBindings({
@@ -192,6 +274,30 @@ test('booleanAttribute bindings', function (t) {
 
     bindings.run('', null, el, false, 'checked');
     t.notOk(el.firstChild.checked, 'should not be checked');
+
+    t.end();
+});
+
+test('booleanAttribute array bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanAttribute',
+            selector: '.thing',
+            name: ['disabled', 'readOnly']
+        }
+    });
+
+    t.notOk(el.firstChild.disabled, 'should not be disabled to start');
+    t.notOk(el.firstChild.readOnly, 'should not be readOnly to start');
+
+    bindings.run('', null, el, true, 'disabled, readOnly');
+    t.ok(el.firstChild.disabled, 'should disabled');
+    t.ok(el.firstChild.readOnly, 'should readOnly');
+
+    bindings.run('', null, el, false, 'disabled, readOnly');
+    t.notOk(el.firstChild.disabled, 'should not be disabled');
+    t.notOk(el.firstChild.readOnly, 'should not be readOnly');
 
     t.end();
 });
@@ -234,7 +340,52 @@ test('ensure selector matches root element', function (t) {
     t.notOk(el.innerHTML, 'should be empty again');
 
     t.end();
+});
 
+test('ensure commas work in selectors', function (t) {
+    var el = getEl('<span class="thing"></span><span class="another-thing"></span>');
+    var bindings = domBindings({
+        'model': {
+            type: 'class',
+            selector: '.thing, .another-thing'
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'hello'));
+    t.notOk(dom.hasClass(el.lastChild, 'hello'));
+
+    bindings.run('model', null, el, 'hello');
+    t.ok(dom.hasClass(el.firstChild, 'hello'));
+    t.ok(dom.hasClass(el.lastChild, 'hello'));
+
+    bindings.run('model', null, el, 'string');
+    t.ok(dom.hasClass(el.firstChild, 'string'));
+    t.ok(dom.hasClass(el.lastChild, 'string'));
+    t.notOk(dom.hasClass(el.firstChild, 'hello'));
+    t.notOk(dom.hasClass(el.lastChild, 'hello'));
+
+    t.end();
+});
+
+test('selector will find root *and* children', function (t) {
+    var el = getEl('<div></div><div></div>');
+    var bindings = domBindings({
+        'model': {
+            type: 'class',
+            selector: 'div' // Root and children are all divs
+        }
+    });
+
+    t.notOk(dom.hasClass(el, 'hello'));
+    t.notOk(dom.hasClass(el.firstChild, 'hello'));
+    t.notOk(dom.hasClass(el.lastChild, 'hello'));
+
+    bindings.run('model', null, el, 'hello');
+    t.ok(dom.hasClass(el, 'hello'));
+    t.ok(dom.hasClass(el.firstChild, 'hello'));
+    t.ok(dom.hasClass(el.lastChild, 'hello'));
+
+    t.end();
 });
 
 // TODO: tests for toggle
@@ -242,6 +393,3 @@ test('ensure selector matches root element', function (t) {
 // TODO: tests for switch
 
 // TODO: tests for multiple bindings in one declaration
-
-
-
