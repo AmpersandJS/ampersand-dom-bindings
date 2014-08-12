@@ -77,8 +77,11 @@ function getBindingFunc(binding) {
     } else if (type === 'attribute') {
         if (!binding.name) throw Error('attribute bindings must have a "name"');
         return function (el, value) {
+            var names = makeArray(binding.name);
             getMatches(el, selector).forEach(function (match) {
-                dom.setAttribute(match, binding.name, value);
+                names.forEach(function (name) {
+                    dom.setAttribute(match, name, value);
+                });
             });
             previousValue = value;
         };

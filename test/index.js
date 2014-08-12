@@ -76,6 +76,30 @@ test('attribute bindings', function (t) {
     t.end();
 });
 
+test('attribute array bindings', function (t) {
+    var el = getEl('<span class="thing" role="some-role"></span>');
+    var bindings = domBindings({
+        'model': {
+            type: 'attribute',
+            selector: '.thing',
+            name: ['height', 'width']
+        }
+    });
+
+    t.equal(el.firstChild.getAttribute('height'), null);
+    t.equal(el.firstChild.getAttribute('width'), null);
+
+    bindings.run('model', null, el, '100');
+    t.equal(el.firstChild.getAttribute('height'), '100');
+    t.equal(el.firstChild.getAttribute('width'), '100');
+
+    bindings.run('model', null, el, '200');
+    t.equal(el.firstChild.getAttribute('height'), '200');
+    t.equal(el.firstChild.getAttribute('width'), '200');
+
+    t.end();
+});
+
 test('value bindings', function (t) {
     var input = getEl('<input class="thing" type="text">');
     var select = getEl('<select class="thing"><option value=""></option><option value="hello"></option><option value="string"></option></select>');

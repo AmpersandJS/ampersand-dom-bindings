@@ -43,7 +43,7 @@ sets and maintains single class as string that matches value of property
 ```
 
 ### attribute 
-sets the whole attribute to match value of property. treats `undefined`, `null`, and `NaN` as `''` (empty string).
+sets the whole attribute to match value of property. treats `undefined`, `null`, and `NaN` as `''` (empty string). `name` can also be an array to set multiple attributes to the same value.
     
 ```js
 'model.key': {
