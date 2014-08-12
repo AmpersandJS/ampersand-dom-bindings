@@ -388,12 +388,8 @@ test('selector will find root *and* children', function (t) {
     t.end();
 });
 
-
 // TODO: tests for toggle
 
 // TODO: tests for switch
 
 // TODO: tests for multiple bindings in one declaration
-
-
-

@@ -66,7 +66,7 @@ sets the value of the element to match value of the property. works well for `in
 
 ### booleanClass
 
-add/removes class based on boolean interpretation of property name. `name`, `yes`, or `no` can also be an array class names where all the values will be toggled.
+add/removes class based on boolean interpretation of property name. `name`, `yes`, or `no` can also be an array of class names where all the values will be toggled.
 
 ```js
 'model.active': {
@@ -156,6 +156,19 @@ If given an array, then treat each contained item as separate binding
     }
 ]
 ```
+
+The `attribute`, `booleanAttribute` and `booleanClass` types also accept an array for the `name` property (and `yes`/`no` for `booleanClass`). All the values in the array will be set the same as if each were bound separately.
+
+```js
+'model.key': {
+    // Also works with booleanAttribute and booleanClass
+    type: 'attribute',
+    selector: '#avatar',
+    // Both height and width will be bound to model.key
+    name: ['height', 'width']
+}
+```
+
 
 ## binding using `role` attribute
 
