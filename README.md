@@ -127,6 +127,22 @@ Toggles existance of multiple items based on value of property.
 }
 ```
 
+### switchClass
+
+Toggles existance of a class on multiple elements based on value of property.
+
+```js
+'model.key': {
+    type: 'switchClass',
+    name: 'is-active',
+    cases: {
+        'edit': '#edit_tab',
+        'new': '#new_tab',
+        'details': '#details_tab'
+    }
+}
+```
+
 ### innerHTML
 
 renders innerHTML, can be a string or DOM, based on property value of model
