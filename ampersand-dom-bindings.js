@@ -52,8 +52,8 @@ function getBindingFunc(binding) {
     var selector = (function () {
         if (typeof binding.selector === 'string') {
             return binding.selector;
-        } else if (binding.role) {
-            return '[role="' + binding.role + '"]';
+        } else if (binding.hook) {
+            return '[data-hook="' + binding.hook + '"]';
         } else {
             return '';
         }

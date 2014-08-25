@@ -11,7 +11,7 @@ function getEl(html) {
 
 
 test('text bindings', function (t) {
-    var el = getEl('<span class="thing" role="hello"></span>');
+    var el = getEl('<span class="thing" data-hook="hello"></span>');
     var bindings = domBindings({
         'model1': {
             type: 'text',
@@ -20,24 +20,24 @@ test('text bindings', function (t) {
         'model2': '.thing',
         'model3': {
             type: 'text',
-            role: 'hello'
+            hook: 'hello'
         }
     });
     t.notEqual(el.firstChild.textContent, 'hello');
     bindings.run('model1', null, el, 'hello');
-    t.equal(el.firstChild.textContent, 'hello');
+    t.equal(el.innerHTML, '<span class="thing" data-hook="hello">hello</span>');
 
     bindings.run('model2', null, el, 'string');
-    t.equal(el.firstChild.textContent, 'string');
+    t.equal(el.innerHTML, '<span class="thing" data-hook="hello">string</span>');
 
     bindings.run('model3', null, el, 'third');
-    t.equal(el.firstChild.textContent, 'third');
+    t.equal(el.innerHTML, '<span class="thing" data-hook="hello">third</span>');
 
     t.end();
 });
 
 test('class bindings', function (t) {
-    var el = getEl('<span class="thing" role="some-role"></span>');
+    var el = getEl('<span class="thing" data-hook="some-hook"></span>');
     var bindings = domBindings({
         'model': {
             type: 'class',
@@ -57,7 +57,7 @@ test('class bindings', function (t) {
 });
 
 test('attribute bindings', function (t) {
-    var el = getEl('<span class="thing" role="some-role"></span>');
+    var el = getEl('<span class="thing" data-hook="some-hook"></span>');
     var bindings = domBindings({
         'model': {
             type: 'attribute',
@@ -77,7 +77,7 @@ test('attribute bindings', function (t) {
 });
 
 test('attribute array bindings', function (t) {
-    var el = getEl('<span class="thing" role="some-role"></span>');
+    var el = getEl('<span class="thing" data-hook="some-hook"></span>');
     var bindings = domBindings({
         'model': {
             type: 'attribute',
@@ -154,7 +154,7 @@ add/removes class based on boolean interpretation of property name.
 
 
 test('booleanClass bindings', function (t) {
-    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanClass',
@@ -175,7 +175,7 @@ test('booleanClass bindings', function (t) {
 });
 
 test('booleanClass yes/no bindings', function (t) {
-    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanClass',
@@ -200,7 +200,7 @@ test('booleanClass yes/no bindings', function (t) {
 });
 
 test('booleanClass array bindings', function (t) {
-    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanClass',
@@ -224,7 +224,7 @@ test('booleanClass array bindings', function (t) {
 });
 
 test('booleanClass yes/no array bindings', function (t) {
-    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanClass',
@@ -258,7 +258,7 @@ test('booleanClass yes/no array bindings', function (t) {
 });
 
 test('booleanAttribute bindings', function (t) {
-    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanAttribute',
@@ -279,7 +279,7 @@ test('booleanAttribute bindings', function (t) {
 });
 
 test('booleanAttribute array bindings', function (t) {
-    var el = getEl('<input type="checkbox" class="thing" role="some-role">');
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanAttribute',
