@@ -141,7 +141,7 @@ add/removes class based on boolean interpretation of property name.
 ```js
 'model.active': {
     type: 'booleanClass',
-    selector: '#something', // or role
+    selector: '#something', // or hook
     // to specify name of class to toggle (if different than key name)
     // you could either specify a name
     name: 'active'
