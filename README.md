@@ -56,6 +56,8 @@ sets the whole attribute to match value of property. treats `undefined`, `null`,
 ### value
 
 sets the value of the element to match value of the property. works well for `input`, `select`, and `textarea` elements. treats `undefined`, `null`, and `NaN` as `''` (empty string).
+
+**note**: The binding will only be applied if the element is not currently in focus. This is done by checking to see if the element is the `document.activeElement` first.
     
 ```js
 'model.key': {
