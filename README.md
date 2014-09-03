@@ -57,7 +57,7 @@ sets the whole attribute to match value of property. treats `undefined`, `null`,
 
 sets the value of the element to match value of the property. works well for `input`, `select`, and `textarea` elements. treats `undefined`, `null`, and `NaN` as `''` (empty string).
 
-**note**: The binding will only be applied if the element is not currently in focus. This is done by checking to see if the element is the `document.activeElement` first.
+**note**: The binding will only be applied if the element is not currently in focus. This is done by checking to see if the element is the `document.activeElement` first. The reason it works this way is because if you've set up two-way data bindings you get a circular event: the input changes, which sets the bound model property, which in turn updates the value of the input. This might sound OK but results in the cursor always jumping to the end of the input/textarea. So if you're editing the middle of a bound text field, the cursor keeps jumping to the end. We avoid this by making sure it's not already in focus thus avoiding the bad loop.
     
 ```js
 'model.key': {
