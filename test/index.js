@@ -133,6 +133,31 @@ test('value bindings', function (t) {
     t.end();
 });
 
+test('value bindings', function (t) {
+    var input = getEl('<input class="thing" type="text">');
+    var select = getEl('<select class="thing"><option value=""></option><option value="hello"></option><option value="string"></option></select>');
+    var textarea = getEl('<textarea class="thing"></textarea>');
+
+    [input, select, textarea].forEach(function (el) {
+        document.body.appendChild(el);
+        el.firstChild.focus();
+
+        var bindings = domBindings({
+            'model': {
+                type: 'value',
+                selector: '.thing'
+            }
+        });
+
+        t.equal(el.firstChild.value, '');
+
+        bindings.run('model', null, el, 'hello');
+        t.equal(el.firstChild.value, '');
+    });
+
+    t.end();
+});
+
 /*
 ### booleanClass
 
