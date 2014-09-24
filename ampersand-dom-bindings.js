@@ -53,7 +53,7 @@ function getBindingFunc(binding) {
         if (typeof binding.selector === 'string') {
             return binding.selector;
         } else if (binding.hook) {
-            return '[data-hook="' + binding.hook + '"]';
+            return '[data-hook~="' + binding.hook + '"]';
         } else {
             return '';
         }
