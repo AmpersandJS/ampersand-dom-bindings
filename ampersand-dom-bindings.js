@@ -1,5 +1,4 @@
 var Store = require('key-tree-store');
-var isArray = require('is-array');
 var dom = require('ampersand-dom');
 var matchesSelector = require('matches-selector');
 
@@ -35,7 +34,7 @@ module.exports = function (bindings) {
 
 var slice = Array.prototype.slice;
 
-function getMatches(el, selector, func) {
+function getMatches(el, selector) {
     if (selector === '') return [el];
     var matches = [];
     if (matchesSelector(el, selector)) matches.push(el);
@@ -48,7 +47,6 @@ function makeArray(val) {
 
 function getBindingFunc(binding) {
     var type = binding.type || 'text';
-    var hasSelector = true;
     var selector = (function () {
         if (typeof binding.selector === 'string') {
             return binding.selector;

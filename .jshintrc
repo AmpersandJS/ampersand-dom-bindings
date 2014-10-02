@@ -1,0 +1,11 @@
+{
+  "browser": true,
+  "browserify": true,
+  "curly": false,
+  "latedef": false,
+  "quotmark": true,
+  "undef": true,
+  "unused": true,
+  "trailing": true,
+  "loopfunc": true
+}
