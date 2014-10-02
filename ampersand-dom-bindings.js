@@ -8,7 +8,7 @@ var matchesSelector = require('matches-selector');
 
 // all resulting functions should be called
 // like func(el, value, lastKeyName)
-module.exports = function (bindings) {
+module.exports = function (bindings, customTypes) {
     var store = new Store();
     var key, current;
 
@@ -21,10 +21,10 @@ module.exports = function (bindings) {
             }));
         } else if (current.forEach) {
             current.forEach(function (binding) {
-                store.add(key, getBindingFunc(binding));
+                store.add(key, getBindingFunc(binding, customTypes));
             });
         } else {
-            store.add(key, getBindingFunc(current));
+            store.add(key, getBindingFunc(current, customTypes));
         }
     }
 
@@ -45,8 +45,13 @@ function makeArray(val) {
     return Array.isArray(val) ? val : [val];
 }
 
-function getBindingFunc(binding) {
+function getBindingFunc(binding, customTypes) {
     var type = binding.type || 'text';
+
+    if (customTypes && customTypes.hasOwnProperty && customTypes.hasOwnProperty(type)) {
+        type = customTypes[type];
+    }
+
     var selector = (function () {
         if (typeof binding.selector === 'string') {
             return binding.selector;
@@ -58,7 +63,7 @@ function getBindingFunc(binding) {
     })();
 
     // storage variable for previous if relevant
-    var previousValue = '';
+    var previousValue;
 
     if (type === 'text') {
         return function (el, value) {
@@ -161,6 +166,13 @@ function getBindingFunc(binding) {
             getMatches(el, selector).forEach(function (match) {
                 dom.html(match, value);
             });
+        };
+    } else if (typeof type === 'function') {
+        return function (el, value) {
+            getMatches(el, selector).forEach(function (match) {
+                type(match, value, previousValue);
+            });
+            previousValue = value;
         };
     } else {
         throw new Error('no such binding type: ' + type);

@@ -413,6 +413,52 @@ test('selector will find root *and* children', function (t) {
     t.end();
 });
 
+
+// Custom bindings
+test('custom binding', function (t) {
+    var el1 = getEl('<span class="thing"></span>');
+    var el2 = getEl('<span class="thing"></span>');
+    var custom = function (bindingEl, value, previous) {
+        var msg = value + ' is the new value.';
+        msg += typeof previous !== 'undefined' ? ' previous value was ' + previous + '.' : '';
+        dom.text(bindingEl, msg);
+    };
+    var bindings1 = domBindings({
+        'model': {
+            type: custom,
+            selector: '.thing'
+        }
+    });
+    var bindings2 = domBindings({
+        'model': {
+            type: 'my-custom-type',
+            selector: '.thing'
+        }
+    }, {
+        'my-custom-type': custom
+    });
+
+    [[el1, bindings1], [el2, bindings2]].forEach(function (obj) {
+        var el = obj[0];
+        var bindings = obj[1];
+        t.equal(el.firstChild.textContent, '');
+
+        bindings.run('model', null, el, 'hello');
+        t.equal(el.firstChild.textContent, 'hello is the new value.');
+
+        bindings.run('model', null, el, 'goodbye');
+        t.equal(el.firstChild.textContent, 'goodbye is the new value. previous value was hello.');
+
+        bindings.run('model', null, el, '');
+        t.equal(el.firstChild.textContent, ' is the new value. previous value was goodbye.');
+
+        bindings.run('model', null, el, 'goodbye');
+        t.equal(el.firstChild.textContent, 'goodbye is the new value. previous value was .');
+    });
+
+    t.end();
+});
+
 // TODO: tests for toggle
 
 // TODO: tests for switch
