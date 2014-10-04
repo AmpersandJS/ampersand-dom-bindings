@@ -347,6 +347,33 @@ test('innerHTML bindings', function (t) {
     t.end();
 });
 
+test('switchClass bindings', function (t) {
+    var el = getEl('<div class="foo"></div><div class="bar"></div>');
+    var bindings = domBindings({
+        'model': {
+            type: 'switchClass',
+            name: 'yes',
+            cases: {
+                foo: '.foo',
+                bar: '.bar'
+            }
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'yes'), '.foo should have no extra class to start');
+    t.notOk(dom.hasClass(el.lastChild, 'yes'), '.bar should have no extra class to start');
+
+    bindings.run('', null, el, 'foo');
+    t.ok(dom.hasClass(el.firstChild, 'yes'), '.foo should now have `yes` class');
+    t.notOk(dom.hasClass(el.lastChild, 'yes'), '.bar should still have no extra class');
+
+    bindings.run('', null, el, 'bar');
+    t.ok(dom.hasClass(el.lastChild, 'yes'), '.bar should now have `yes` class');
+    t.notOk(dom.hasClass(el.firstChild, 'yes'), '.foo should now have no extra class');
+
+    t.end();
+});
+
 test('ensure selector matches root element', function (t) {
     var el = getEl();
     var bindings = domBindings({

@@ -162,6 +162,19 @@ function getBindingFunc(binding) {
                 dom.html(match, value);
             });
         };
+    } else if (type === 'switchClass') {
+        if (!binding.cases) throw Error('switchClass bindings must have "cases"');
+
+        return function (el, value, keyName) {
+            var name = makeArray(binding.name || keyName);
+            for (var item in binding.cases) {
+                getMatches(el, binding.cases[item]).forEach(function (match) {
+                    name.forEach(function (className) {
+                        dom[value === item ? 'addClass' : 'removeClass'](match, className);
+                    });
+                });
+            }
+        };
     } else {
         throw new Error('no such binding type: ' + type);
     }
