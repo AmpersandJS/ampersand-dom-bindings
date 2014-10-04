@@ -418,3 +418,21 @@ test('selector will find root *and* children', function (t) {
 // TODO: tests for switch
 
 // TODO: tests for multiple bindings in one declaration
+
+test('Issue #20, Ensure support for space-separated `data-hook`s', function (t) {
+    var el = getEl('<span class="thing" data-hook="hello other"></span>');
+    var bindings = domBindings({
+        'model1': {
+            type: 'text',
+            hook: 'other'
+        }
+    });
+
+    bindings.run('model1', null, el, 'first');
+    t.equal(el.firstChild.textContent, 'first');
+
+    bindings.run('model1', null, el, 'second');
+    t.equal(el.firstChild.innerHTML, 'second');
+
+    t.end();
+});
