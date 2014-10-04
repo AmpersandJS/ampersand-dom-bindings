@@ -164,7 +164,6 @@ function getBindingFunc(binding) {
         };
     } else if (type === 'switchClass') {
         if (!binding.cases) throw Error('switchClass bindings must have "cases"');
-
         return function (el, value, keyName) {
             var name = makeArray(binding.name || keyName);
             for (var item in binding.cases) {
