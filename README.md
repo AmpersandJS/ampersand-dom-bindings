@@ -97,7 +97,7 @@ toggles whole attribute on the element (think `checked`) based on boolean interp
 
 ### toggle
 
-toggles existance of entire element (uses a comment node as placeholder if gone) based on boolean interpretation of property name.
+toggles existence of entire element (uses a comment node as placeholder if gone) based on boolean interpretation of property name.
 
 ```js
 // simple show/hide of single element
@@ -116,11 +116,27 @@ toggles existance of entire element (uses a comment node as placeholder if gone)
 
 ### switch
 
-Toggles existance of multiple items based on value of property.
+Toggles existence of multiple items based on value of property.
 
 ```js
 'model.activetab': {
     type: 'switch',
+    cases: {
+        'edit': '#edit_tab',
+        'new': '#new_tab',
+        'details': '#details_tab'
+    }
+}
+```
+
+### switchClass
+
+Toggles existence of a class on multiple elements based on value of property.
+
+```js
+'model.key': {
+    type: 'switchClass',
+    name: 'is-active',
     cases: {
         'edit': '#edit_tab',
         'new': '#new_tab',

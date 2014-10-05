@@ -51,7 +51,7 @@ function getBindingFunc(binding) {
         if (typeof binding.selector === 'string') {
             return binding.selector;
         } else if (binding.hook) {
-            return '[data-hook="' + binding.hook + '"]';
+            return '[data-hook~="' + binding.hook + '"]';
         } else {
             return '';
         }
@@ -161,6 +161,18 @@ function getBindingFunc(binding) {
             getMatches(el, selector).forEach(function (match) {
                 dom.html(match, value);
             });
+        };
+    } else if (type === 'switchClass') {
+        if (!binding.cases) throw Error('switchClass bindings must have "cases"');
+        return function (el, value, keyName) {
+            var name = makeArray(binding.name || keyName);
+            for (var item in binding.cases) {
+                getMatches(el, binding.cases[item]).forEach(function (match) {
+                    name.forEach(function (className) {
+                        dom[value === item ? 'addClass' : 'removeClass'](match, className);
+                    });
+                });
+            }
         };
     } else if (typeof type === 'function') {
         return function (el, value) {
