@@ -473,6 +473,29 @@ test('custom binding', function (t) {
     t.end();
 });
 
+//Bad type is an error
+test('Errors on a bad type', function (t) {
+    function bindings(type) {
+        return function () {
+            domBindings({
+                'model': {
+                    type: type,
+                    selector: '.thing'
+                }
+            });
+        };
+    }
+    function errMsg(msg) {
+        return new RegExp(('no such binding type: ' + msg).replace(/[\[\]]/g, '\\$&'));
+    }
+
+    t.throws(bindings('not-a-type'), errMsg('not-a-type'));
+    t.throws(bindings({}), errMsg({}));
+    t.throws(bindings([]), errMsg([]));
+
+    t.end();
+});
+
 // TODO: tests for toggle
 
 // TODO: tests for switch
