@@ -440,6 +440,62 @@ test('selector will find root *and* children', function (t) {
     t.end();
 });
 
+
+// Custom bindings
+test('custom binding', function (t) {
+    var el = getEl('<span class="thing"></span>');
+    var custom = function (bindingEl, value, previous) {
+        var msg = value + ' is the new value.';
+        msg += typeof previous !== 'undefined' ? ' previous value was ' + previous + '.' : '';
+        dom.text(bindingEl, msg);
+    };
+    var bindings = domBindings({
+        'model': {
+            type: custom,
+            selector: '.thing'
+        }
+    });
+
+    t.equal(el.firstChild.textContent, '');
+
+    bindings.run('model', null, el, 'hello');
+    t.equal(el.firstChild.textContent, 'hello is the new value.');
+
+    bindings.run('model', null, el, 'goodbye');
+    t.equal(el.firstChild.textContent, 'goodbye is the new value. previous value was hello.');
+
+    bindings.run('model', null, el, '');
+    t.equal(el.firstChild.textContent, ' is the new value. previous value was goodbye.');
+
+    bindings.run('model', null, el, 'goodbye');
+    t.equal(el.firstChild.textContent, 'goodbye is the new value. previous value was .');
+
+    t.end();
+});
+
+//Bad type is an error
+test('Errors on a bad type', function (t) {
+    function bindings(type) {
+        return function () {
+            domBindings({
+                'model': {
+                    type: type,
+                    selector: '.thing'
+                }
+            });
+        };
+    }
+    function errMsg(msg) {
+        return new RegExp(('no such binding type: ' + msg).replace(/[\[\]]/g, '\\$&'));
+    }
+
+    t.throws(bindings('not-a-type'), errMsg('not-a-type'));
+    t.throws(bindings({}), errMsg({}));
+    t.throws(bindings([]), errMsg([]));
+
+    t.end();
+});
+
 // TODO: tests for toggle
 
 // TODO: tests for switch

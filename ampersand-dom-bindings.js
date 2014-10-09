@@ -47,6 +47,7 @@ function makeArray(val) {
 
 function getBindingFunc(binding) {
     var type = binding.type || 'text';
+    var isCustomBinding = typeof type === 'function';
     var selector = (function () {
         if (typeof binding.selector === 'string') {
             return binding.selector;
@@ -58,9 +59,16 @@ function getBindingFunc(binding) {
     })();
 
     // storage variable for previous if relevant
-    var previousValue = '';
+    var previousValue;
 
-    if (type === 'text') {
+    if (isCustomBinding) {
+        return function (el, value) {
+            getMatches(el, selector).forEach(function (match) {
+                type(match, value, previousValue);
+            });
+            previousValue = value;
+        };
+    } else if (type === 'text') {
         return function (el, value) {
             getMatches(el, selector).forEach(function (match) {
                 dom.text(match, value);
