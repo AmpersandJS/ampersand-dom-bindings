@@ -156,6 +156,21 @@ renders innerHTML, can be a string or DOM, based on property value of model
 }
 ```
 
+### custom functions
+
+`type` can also be a function. It will be run for each matching `el` with the
+`value` and `previousValue` of the property.
+
+```js
+'model.key': {
+    type: function (el, value, previousValue) {
+        // Do something custom to el
+        // using value and/or previousValue
+    },
+    selector: '#something', // or hook
+}
+```
+
 ## Handling multiple bindings for a given key
 
 If given an array, then treat each contained item as separate binding
