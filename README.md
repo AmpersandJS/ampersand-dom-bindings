@@ -286,6 +286,10 @@ module.exports = View.extend({
 });
 ```
 
+## changelog
+
+- 3.3.1 - Fix issues with yes/no handling in boolean class. Add lots of tests.
+
 ## license
 
 MIT
