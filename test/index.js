@@ -496,9 +496,146 @@ test('Errors on a bad type', function (t) {
     t.end();
 });
 
-// TODO: tests for toggle
+test('basic toggle', function (t) {
+    var el = getEl('<span></span>');
+    var bindings = domBindings({
+        'model1': {
+            type: 'toggle',
+            selector: 'span'
+        }
+    });
+
+    var span = el.children[0];
+    t.equal(span.style.display, '', 'base case');
+
+    bindings.run('model1', null, el, true);
+    t.equal(span.style.display, '', 'base case');
+
+    bindings.run('model1', null, el, false);
+    t.equal(span.style.display, 'none', 'should now be hidden');
+
+    bindings.run('model1', null, el, true);
+    t.equal(span.style.display, '', 'should now be visible');
+
+    t.end();
+});
+
+test('toggle with yes/no', function (t) {
+    var el = getEl('<span class="one"></span><span class="two"></span>');
+    var bindings = domBindings({
+        'model1': {
+            type: 'toggle',
+            no: '.one',
+            yes: '.two'
+        }
+    });
+
+    var one = el.children[0];
+    var two = el.children[1];
+
+    t.equal(one.style.display, '', 'base case');
+    t.equal(two.style.display, '', 'base case');
+
+    bindings.run('model1', null, el, true);
+
+    t.equal(one.style.display, 'none', 'one should be hidden');
+    t.equal(two.style.display, '', 'two should be visible');
+
+    bindings.run('model1', null, el, false);
+
+    t.equal(one.style.display, '', 'one should be visible');
+    t.equal(two.style.display, 'none', 'two should be hidden');
+
+    bindings.run('model1', null, el, 'something truthy');
+
+    t.equal(one.style.display, 'none', 'one should be hidden');
+    t.equal(two.style.display, '', 'two should be visible');
+
+    // here we'll try a bunch of variations of falsy things
+    // empty string
+    bindings.run('model1', null, el, true);
+    t.equal(one.style.display, 'none', 'one should be hidden');
+    t.equal(two.style.display, '', 'two should be visible');
+    bindings.run('model1', null, el, '');
+    t.equal(one.style.display, '', 'one should be visible');
+    t.equal(two.style.display, 'none', 'two should be hidden');
+
+    // null
+    bindings.run('model1', null, el, true);
+    t.equal(one.style.display, 'none', 'one should be hidden');
+    t.equal(two.style.display, '', 'two should be visible');
+    bindings.run('model1', null, el, null);
+    t.equal(one.style.display, '', 'one should be visible');
+    t.equal(two.style.display, 'none', 'two should be hidden');
+
+    // undefined
+    bindings.run('model1', null, el, true);
+    t.equal(one.style.display, 'none', 'one should be hidden');
+    t.equal(two.style.display, '', 'two should be visible');
+    bindings.run('model1', null, el, undefined);
+    t.equal(one.style.display, '', 'one should be visible');
+    t.equal(two.style.display, 'none', 'two should be hidden');
+
+    // zero
+    bindings.run('model1', null, el, true);
+    t.equal(one.style.display, 'none', 'one should be hidden');
+    t.equal(two.style.display, '', 'two should be visible');
+    bindings.run('model1', null, el, 0);
+    t.equal(one.style.display, '', 'one should be visible');
+    t.equal(two.style.display, 'none', 'two should be hidden');
+
+    t.end();
+});
 
 // TODO: tests for switch
+test('switch', function (t) {
+    var el = getEl('<div class="foo"></div><div class="bar"></div><div class="baz"></div>');
+    var bindings = domBindings({
+        'model': {
+            type: 'switch',
+            name: 'yes',
+            cases: {
+                foo: '.foo',
+                bar: '.bar',
+                baz: '.baz'
+            }
+        }
+    });
+
+    var foo = el.children[0];
+    var bar = el.children[1];
+    var baz = el.children[2];
+
+    t.equal(foo.style.display, '', 'base case');
+    t.equal(bar.style.display, '', 'base case');
+    t.equal(baz.style.display, '', 'base case');
+
+    bindings.run('', null, el, 'foo');
+
+    t.equal(foo.style.display, '', 'show foo');
+    t.equal(bar.style.display, 'none');
+    t.equal(baz.style.display, 'none');
+
+    bindings.run('', null, el, 'bar');
+
+    t.equal(foo.style.display, 'none');
+    t.equal(bar.style.display, '', 'show bar');
+    t.equal(baz.style.display, 'none');
+
+    bindings.run('', null, el, 'baz');
+
+    t.equal(foo.style.display, 'none');
+    t.equal(bar.style.display, 'none');
+    t.equal(baz.style.display, '', 'show baz');
+
+    bindings.run('', null, el, 'something else');
+
+    t.equal(foo.style.display, 'none');
+    t.equal(bar.style.display, 'none');
+    t.equal(baz.style.display, 'none');
+
+    t.end();
+});
 
 // TODO: tests for multiple bindings in one declaration
 
@@ -516,6 +653,77 @@ test('Issue #20, Ensure support for space-separated `data-hook`s', function (t) 
 
     bindings.run('model1', null, el, 'second');
     t.equal(el.firstChild.innerHTML, 'second');
+
+    t.end();
+});
+
+
+test('handle yes/no cases for `booleanClass` when missing `yes` or `no`', function (t) {
+    var el = getEl('<span></span>');
+
+    var bindings = domBindings({
+        'model1': {
+            type: 'booleanClass',
+            no: 'no',
+            selector: 'span'
+        }
+    });
+
+    t.equal(el.firstChild.className, '');
+    bindings.run('model1', null, el, false);
+    t.equal(el.firstChild.className, 'no');
+    bindings.run('model1', null, el, true);
+    t.equal(el.firstChild.className, '');
+
+    el = getEl('<span></span>');
+
+    bindings = domBindings({
+        'model1': {
+            type: 'booleanClass',
+            yes: 'yes',
+            selector: 'span'
+        }
+    });
+
+    t.equal(el.firstChild.className, '');
+    bindings.run('model1', null, el, true);
+    t.equal(el.firstChild.className, 'yes');
+    bindings.run('model1', null, el, false);
+    t.equal(el.firstChild.className, '');
+
+    t.end();
+});
+
+test('handle yes/no cases for `toggle` when missing `yes` or `no`', function (t) {
+    var el = getEl('<span></span>');
+
+    var bindings = domBindings({
+        'model1': {
+            type: 'toggle',
+            no: 'span'
+        }
+    });
+
+    t.equal(el.firstChild.style.display, '', 'base case');
+    bindings.run('model1', null, el, false);
+    t.equal(el.firstChild.style.display, '', 'should show when false');
+    bindings.run('model1', null, el, true);
+    t.equal(el.firstChild.style.display, 'none', 'should hide when true');
+
+    el = getEl('<span></span>');
+
+    bindings = domBindings({
+        'model1': {
+            type: 'toggle',
+            yes: 'span'
+        }
+    });
+
+    t.equal(el.firstChild.style.display, '', 'base case');
+    bindings.run('model1', null, el, true, '');
+    t.equal(el.firstChild.style.display, '', 'should show when true');
+    bindings.run('model1', null, el, false);
+    t.equal(el.firstChild.style.display, 'none', 'should hide when false');
 
     t.end();
 });

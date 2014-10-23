@@ -57,6 +57,9 @@ function getBindingFunc(binding) {
             return '';
         }
     })();
+    var yes = binding.yes;
+    var no = binding.no;
+    var hasYesNo = !!(yes || no);
 
     // storage variable for previous if relevant
     var previousValue;
@@ -103,10 +106,10 @@ function getBindingFunc(binding) {
         };
     } else if (type === 'booleanClass') {
         // if there's a `no` case this is actually a switch
-        if (binding.no) {
-            return function (el, value, keyName) {
-                var yes = makeArray(binding.name || binding.yes || keyName);
-                var no = makeArray(binding.no);
+        if (hasYesNo) {
+            yes = makeArray(yes || '');
+            no = makeArray(no || '');
+            return function (el, value) {
                 var prevClass = value ? no : yes;
                 var newClass = value ? yes : no;
                 getMatches(el, selector).forEach(function (match) {
@@ -139,17 +142,17 @@ function getBindingFunc(binding) {
         };
     } else if (type === 'toggle') {
         // this doesn't require a selector since we can pass yes/no selectors
-        if (binding.yes && binding.no) {
+        if (hasYesNo) {
             return function (el, value) {
-                getMatches(el, binding.yes).forEach(function (match) {
+                getMatches(el, yes).forEach(function (match) {
                     dom[value ? 'show' : 'hide'](match);
                 });
-                getMatches(el, binding.no).forEach(function (match) {
+                getMatches(el, no).forEach(function (match) {
                     dom[value ? 'hide' : 'show'](match);
                 });
             };
         } else {
-                return function (el, value) {
+            return function (el, value) {
                 getMatches(el, selector).forEach(function (match) {
                     dom[value ? 'show' : 'hide'](match);
                 });
