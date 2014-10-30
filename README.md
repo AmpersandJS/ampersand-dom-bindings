@@ -97,7 +97,7 @@ toggles whole attribute on the element (think `checked`) based on boolean interp
 
 ### toggle
 
-toggles existence of entire element (uses a comment node as placeholder if gone) based on boolean interpretation of property name.
+toggles visibility (using display: none) of entire element based on boolean interpretation of property.
 
 ```js
 // simple show/hide of single element
