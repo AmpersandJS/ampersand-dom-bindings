@@ -374,6 +374,125 @@ test('switchClass bindings', function (t) {
     t.end();
 });
 
+test('switchAttribute bindings using name option', function(t) {
+    var el = getEl('<div></div>');
+
+    var bindings = domBindings({
+        'model': {
+            type: 'switchAttribute',
+            selector: 'div',
+            name: 'type',
+            cases: {
+                foo: 'text',
+                bar: 'password',
+            }
+        }
+    });
+
+    t.strictEqual(dom.getAttribute(el, 'type'), null, 'el should not have the attribute "type"');
+
+    bindings.run('', null, el, 'foo');
+    t.equal(dom.getAttribute(el, 'type'), 'text');
+
+    bindings.run('', null, el, 'bar');
+    t.equal(dom.getAttribute(el, 'type'), 'password');
+
+    bindings.run('', null, el, 'abcdefg');
+    t.equal(dom.getAttribute(el, 'type'), null);
+
+    t.end();
+});
+
+test('switchAttribute bindings without name option', function(t) {
+    var el = getEl('<div></div>');
+
+    var bindings = domBindings({
+        'model.href': {
+            type: 'switchAttribute',
+            selector: 'div',
+            cases: {
+                foo: '/foo',
+                bar: '/bar',
+            }
+        }
+    });
+
+    t.strictEqual(dom.getAttribute(el, 'href'), null, 'el should not have the attribute "href"');
+
+    bindings.run('', null, el, 'foo', 'href');
+    t.equal(dom.getAttribute(el, 'href'), '/foo');
+
+    bindings.run('', null, el, 'bar', 'href');
+    t.equal(dom.getAttribute(el, 'href'), '/bar');
+
+    bindings.run('', null, el, 'abcdefg', 'href');
+    t.equal(dom.getAttribute(el, 'href'), null);
+
+    t.end();
+});
+
+test('switchAttribute bindings with multiple attributes', function(t) {
+    var el = getEl('<div></div>');
+
+    var bindings = domBindings({
+        'model': {
+            type: 'switchAttribute',
+            selector: 'div',
+            cases: {
+              foo: { href: '/one', name: 'one' },
+              bar: { href: '/two', name: 'two' },
+            }
+        }
+    });
+
+    t.strictEqual(dom.getAttribute(el, 'href'), null, 'el should not have the attribute "href"');
+    t.strictEqual(dom.getAttribute(el, 'name'), null, 'el should not have the attribute "name"');
+
+    bindings.run('', null, el, 'foo');
+    t.equal(dom.getAttribute(el, 'href'), '/one');
+    t.equal(dom.getAttribute(el, 'name'), 'one');
+
+    bindings.run('', null, el, 'bar');
+    t.equal(dom.getAttribute(el, 'href'), '/two');
+    t.equal(dom.getAttribute(el, 'name'), 'two');
+
+    bindings.run('', null, el, 'abcdefg');
+    t.equal(dom.getAttribute(el, 'href'), null);
+    t.equal(dom.getAttribute(el, 'name'), null);
+
+    t.end();
+});
+
+test('switchAttribute with boolean/undefined properties', function(t) {
+    var el = getEl();
+
+    var bindings = domBindings({
+        'model': {
+            type: 'switchAttribute',
+            selector: 'div',
+            name: 'style',
+            cases: {
+              true: 'display: block',
+              false: 'display: none',
+              undefined: 'color: gray',
+            }
+        }
+    });
+
+    t.strictEqual(dom.getAttribute(el, 'style'), null, 'el should not have the attribute "style"');
+
+    bindings.run('', null, el, true);
+    t.equal(dom.getAttribute(el, 'style'), 'display: block');
+
+    bindings.run('', null, el, false);
+    t.equal(dom.getAttribute(el, 'style'), 'display: none');
+
+    bindings.run('', null, el, undefined);
+    t.equal(dom.getAttribute(el, 'style'), 'color: gray');
+
+    t.end();
+});
+
 test('ensure selector matches root element', function (t) {
     var el = getEl();
     var bindings = domBindings({

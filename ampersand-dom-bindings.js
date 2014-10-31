@@ -42,6 +42,18 @@ function getMatches(el, selector) {
     return matches.concat(slice.call(el.querySelectorAll(selector)));
 }
 
+function setAttributes(el, attrs) {
+    for (var name in attrs) {
+        dom.setAttribute(el, name, attrs[name]);
+    }
+}
+
+function removeAttributes(el, attrs) {
+    for (var name in attrs) {
+        dom.removeAttribute(el, name);
+    }
+}
+
 function makeArray(val) {
     return Array.isArray(val) ? val : [val];
 }
@@ -185,6 +197,26 @@ function getBindingFunc(binding, context) {
                     });
                 });
             }
+        };
+    } else if (type === 'switchAttribute') {
+        if (!binding.cases) throw Error('switchAttribute bindings must have "cases"');
+        return function (el, value, keyName) {
+            getMatches(el, selector).forEach(function (match) {
+                if (previousValue) {
+                    removeAttributes(match, previousValue);
+                }
+
+                if (value in binding.cases) {
+                    var attrs = binding.cases[value];
+                    if (typeof attrs === 'string') {
+                        attrs = {};
+                        attrs[binding.name || keyName] = binding.cases[value];
+                    }
+                    setAttributes(match, attrs);
+
+                    previousValue = attrs;
+                }
+            });
         };
     } else {
         throw new Error('no such binding type: ' + type);
