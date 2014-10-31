@@ -8,7 +8,7 @@ var matchesSelector = require('matches-selector');
 
 // all resulting functions should be called
 // like func(el, value, lastKeyName)
-module.exports = function (bindings, obj) {
+module.exports = function (bindings, thisArg) {
     var store = new Store();
     var key, current;
 
@@ -21,10 +21,10 @@ module.exports = function (bindings, obj) {
             }));
         } else if (current.forEach) {
             current.forEach(function (binding) {
-                store.add(key, getBindingFunc(binding, obj));
+                store.add(key, getBindingFunc(binding, thisArg));
             });
         } else {
-            store.add(key, getBindingFunc(current, obj));
+            store.add(key, getBindingFunc(current, thisArg));
         }
     }
 
@@ -45,7 +45,7 @@ function makeArray(val) {
     return Array.isArray(val) ? val : [val];
 }
 
-function getBindingFunc(binding, obj) {
+function getBindingFunc(binding, thisArg) {
     var type = binding.type || 'text';
     var isCustomBinding = typeof type === 'function';
     var selector = (function () {
@@ -67,7 +67,7 @@ function getBindingFunc(binding, obj) {
     if (isCustomBinding) {
         return function (el, value) {
             getMatches(el, selector).forEach(function (match) {
-                type.bind(obj)(match, value, previousValue);
+                type.call(thisArg, match, value, previousValue);
             });
             previousValue = value;
         };
