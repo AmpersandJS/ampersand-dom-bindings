@@ -159,7 +159,8 @@ renders innerHTML, can be a string or DOM, based on property value of model
 ### custom functions
 
 `type` can also be a function. It will be run for each matching `el` with the
-`value` and `previousValue` of the property.
+`value` and `previousValue` of the property. The function is bound to the view
+declaring the bindings, so `this` refers to the view.
 
 ```js
 'model.key': {
