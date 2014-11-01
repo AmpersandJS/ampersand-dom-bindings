@@ -1,3 +1,4 @@
+/*$AMPERSAND_VERSION*/
 var Store = require('key-tree-store');
 var dom = require('ampersand-dom');
 var matchesSelector = require('matches-selector');
