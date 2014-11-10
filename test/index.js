@@ -473,6 +473,24 @@ test('custom binding', function (t) {
     t.end();
 });
 
+test('custom binding with context', function (t) {
+    var el = getEl('<span class="thing"></span>');
+    var custom = function (bindingEl) {
+        dom.text(bindingEl, 'this.value was ' + this.value);
+    };
+    var bindings = domBindings({
+        'model': {
+            type: custom,
+            selector: '.thing'
+        }
+    }, { value: 'goodbye' });
+
+    bindings.run('model', null, el, 'hello');
+    t.equal(el.firstChild.textContent, 'this.value was goodbye');
+
+    t.end();
+});
+
 //Bad type is an error
 test('Errors on a bad type', function (t) {
     function bindings(type) {
