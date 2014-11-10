@@ -473,7 +473,7 @@ test('custom binding', function (t) {
     t.end();
 });
 
-test('custom binding with thisArg', function (t) {
+test('custom binding with context', function (t) {
     var el = getEl('<span class="thing"></span>');
     var custom = function (bindingEl) {
         dom.text(bindingEl, 'this.value was ' + this.value);
