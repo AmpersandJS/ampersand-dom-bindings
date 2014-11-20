@@ -142,20 +142,21 @@ function getBindingFunc(binding, context) {
             });
         };
     } else if (type === 'toggle') {
+        var mode = (binding.mode || 'display');
         // this doesn't require a selector since we can pass yes/no selectors
         if (hasYesNo) {
             return function (el, value) {
                 getMatches(el, yes).forEach(function (match) {
-                    dom[value ? 'show' : 'hide'](match);
+                    dom[value ? 'show' : 'hide'](match, mode);
                 });
                 getMatches(el, no).forEach(function (match) {
-                    dom[value ? 'hide' : 'show'](match);
+                    dom[value ? 'hide' : 'show'](match, mode);
                 });
             };
         } else {
             return function (el, value) {
                 getMatches(el, selector).forEach(function (match) {
-                    dom[value ? 'show' : 'hide'](match);
+                    dom[value ? 'show' : 'hide'](match, mode);
                 });
             };
         }

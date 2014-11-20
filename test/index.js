@@ -538,6 +538,31 @@ test('basic toggle', function (t) {
     t.end();
 });
 
+test('toggle visibility property', function (t) {
+    var el = getEl('<span></span>');
+    var bindings = domBindings({
+        'model1': {
+            type: 'toggle',
+            selector: 'span',
+            mode: 'visibility'
+        }
+    });
+
+    var span = el.children[0];
+    t.equal(span.style.visibility, '', 'base case');
+
+    bindings.run('model1', null, el, true);
+    t.equal(span.style.visibility, '', 'base case');
+
+    bindings.run('model1', null, el, false);
+    t.equal(span.style.visibility, 'hidden', 'should now be hidden');
+
+    bindings.run('model1', null, el, true);
+    t.equal(span.style.visibility, '', 'should now be visible');
+
+    t.end();
+});
+
 test('toggle with yes/no', function (t) {
     var el = getEl('<span class="one"></span><span class="two"></span>');
     var bindings = domBindings({
