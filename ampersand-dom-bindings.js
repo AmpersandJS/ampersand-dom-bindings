@@ -133,14 +133,36 @@ function getBindingFunc(binding, context) {
             };
         }
     } else if (type === 'booleanAttribute') {
-        return function (el, value, keyName) {
-            var name = makeArray(binding.name || keyName);
-            getMatches(el, selector).forEach(function (match) {
-                name.forEach(function (attr) {
-                    dom[value ? 'addAttribute' : 'removeAttribute'](match, attr);
+        // if there are `yes` and `no` selectors, this swaps between them
+        if (hasYesNo) {
+            yes = makeArray(yes || '');
+            no = makeArray(no || '');
+            return function (el, value) {
+                var prevAttribute = value ? no : yes;
+                var newAttribute = value ? yes : no;
+                getMatches(el, selector).forEach(function (match) {
+                    prevAttribute.forEach(function (pa) {
+                        if (pa) {
+                            dom.removeAttribute(match, pa);
+                        }
+                    });
+                    newAttribute.forEach(function (na) {
+                        if (na) {
+                            dom.addAttribute(match, na);
+                        }
+                    });
                 });
-            });
-        };
+            };
+        } else {
+            return function (el, value, keyName) {
+                var name = makeArray(binding.name || keyName);
+                getMatches(el, selector).forEach(function (match) {
+                    name.forEach(function (attr) {
+                        dom[value ? 'addAttribute' : 'removeAttribute'](match, attr);
+                    });
+                });
+            };
+        }
     } else if (type === 'toggle') {
         // this doesn't require a selector since we can pass yes/no selectors
         if (hasYesNo) {

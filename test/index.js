@@ -327,6 +327,65 @@ test('booleanAttribute array bindings', function (t) {
     t.end();
 });
 
+test('booleanAttribute yes/no bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanAttribute',
+            selector: '.thing',
+            yes: 'awesome',
+            no: 'not-awesome'
+        }
+    });
+
+    t.notOk(el.firstChild.hasAttribute('awesome'), 'should not start with yes attribute');
+    t.notOk(el.firstChild.hasAttribute('not-awesome'), 'should not start with no attribute');
+
+    bindings.run('', null, el, true);
+    t.ok(el.firstChild.hasAttribute('awesome'), 'should have yes attribute');
+    t.notOk(el.firstChild.hasAttribute('not-awesome'), 'should not have no attribute');
+
+    bindings.run('', null, el, false);
+    t.notOk(el.firstChild.hasAttribute('awesome'), 'should not have yes attribute');
+    t.ok(el.firstChild.hasAttribute('not-awesome'), 'should have no attribute');
+
+    t.end();
+});
+
+test('booleanAttribute yes/no array bindings', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanAttribute',
+            selector: '.thing',
+            yes: ['awesome', 'very-awesome', 'super-awesome'],
+            no: ['not-awesome', 'very-not-awesome']
+        }
+    });
+
+    t.notOk(el.firstChild.hasAttribute('awesome'), 'should not start with yes attribute');
+    t.notOk(el.firstChild.hasAttribute('very-awesome'), 'should not start with no attribute');
+    t.notOk(el.firstChild.hasAttribute('super-awesome'), 'should not start with no attribute');
+    t.notOk(el.firstChild.hasAttribute('not-awesome'), 'should not start with yes attribute');
+    t.notOk(el.firstChild.hasAttribute('very-not-awesome'), 'should not start with no attribute');
+
+    bindings.run('', null, el, true);
+    t.ok(el.firstChild.hasAttribute('awesome'), 'should have yes attribute');
+    t.ok(el.firstChild.hasAttribute('very-awesome'), 'should have yes attribute');
+    t.ok(el.firstChild.hasAttribute('super-awesome'), 'should have yes attribute');
+    t.notOk(el.firstChild.hasAttribute('not-awesome'), 'should not have no attribute');
+    t.notOk(el.firstChild.hasAttribute('very-not-awesome'), 'should not have no attribute');
+
+    bindings.run('', null, el, false);
+    t.notOk(el.firstChild.hasAttribute('awesome'), 'should not have yes attribute');
+    t.notOk(el.firstChild.hasAttribute('very-awesome'), 'should not have yes attribute');
+    t.notOk(el.firstChild.hasAttribute('super-awesome'), 'should not have yes attribute');
+    t.ok(el.firstChild.hasAttribute('not-awesome'), 'should have no attribute');
+    t.ok(el.firstChild.hasAttribute('very-not-awesome'), 'should have no attribute');
+
+    t.end();
+});
+
 test('innerHTML bindings', function (t) {
     var el = getEl();
     var bindings = domBindings({
@@ -708,6 +767,42 @@ test('handle yes/no cases for `booleanClass` when missing `yes` or `no`', functi
     t.equal(el.firstChild.className, 'yes');
     bindings.run('model1', null, el, false);
     t.equal(el.firstChild.className, '');
+
+    t.end();
+});
+
+test('handle yes/no cases for `booleanAttribute` when missing `yes` or `no`', function (t) {
+    var el = getEl('<span></span>');
+
+    var bindings = domBindings({
+        'model1': {
+            type: 'booleanAttribute',
+            no: 'no',
+            selector: 'span'
+        }
+    });
+
+    t.notOk(el.firstChild.hasAttribute('no'));
+    bindings.run('model1', null, el, false);
+    t.ok(el.firstChild.hasAttribute('no'));
+    bindings.run('model1', null, el, true);
+    t.notOk(el.firstChild.hasAttribute('no'));
+
+    el = getEl('<span></span>');
+
+    bindings = domBindings({
+        'model1': {
+            type: 'booleanAttribute',
+            yes: 'yes',
+            selector: 'span'
+        }
+    });
+
+    t.notOk(el.firstChild.hasAttribute('yes'));
+    bindings.run('model1', null, el, true);
+    t.ok(el.firstChild.hasAttribute('yes'));
+    bindings.run('model1', null, el, false);
+    t.notOk(el.firstChild.hasAttribute('yes'));
 
     t.end();
 });
