@@ -1,7 +1,7 @@
 {
   "name": "ampersand-dom-bindings",
   "description": "Takes binding declarations and returns key-tree-store of functions that can be used to apply those bindings.",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "author": "'Henrik Joreteg' <henrik@andyet.net>",
   "browserify": {
     "transform": [
