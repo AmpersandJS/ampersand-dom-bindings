@@ -102,13 +102,20 @@ toggles whole attribute on the element (think `checked`) based on boolean interp
 
 ### toggle
 
-toggles visibility (using display: none) of entire element based on boolean interpretation of property.
+toggles visibility (using display: none by default) of entire element based on boolean interpretation of property.
 
 ```js
 // simple show/hide of single element
 'model.key': {
     type: 'toggle',
     selector: '#something' // or hook
+}
+
+// toggle visibility property instead
+'model.key': {
+    type: 'toggle',
+    selector: '#something', // or hook
+    mode: 'visibility'
 }
 
 // show/hide where true/false show different things
