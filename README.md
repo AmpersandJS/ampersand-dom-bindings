@@ -91,7 +91,12 @@ toggles whole attribute on the element (think `checked`) based on boolean interp
 'model.isAwesome': {
     type: 'booleanAttribute',
     selector: '#something', // or hook
+    // to specify name of attribute to toggle (if different than key name)
+    // you could either specify a name
     name: 'checked'
+    // or a yes/no case
+    yes: 'data-is-awesome',
+    no: 'data-is-not-awesome'
 }
 ```
 
