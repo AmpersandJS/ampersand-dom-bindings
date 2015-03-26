@@ -150,6 +150,35 @@ Toggles existence of a class on multiple elements based on value of property.
 }
 ```
 
+### switchAttribute
+
+Sets attribute(s) on matching elements based on the value of a property matching the case.
+
+```js
+'model.key': {
+    type: 'switchAttribute',
+    selector: 'a', // or hook
+    name: 'href',  // name defaults to the property name (e.g. 'key' from 'model.key' in this example)
+    cases: {
+        value1: '/foo',
+        value2: '/bar'
+    }
+}
+```
+
+You can also specify multiple attributes by using an object as the case value. The object keys are used instead of the `name` option.
+
+```js
+'model.key': {
+    type: 'switchAttribute',
+    selector: 'a', // or hook
+    cases: {
+        value1: { href: '/foo', name: 'foo' },
+        value2: { href: '/bar', name: 'bar' }
+    }
+}
+```
+
 ### innerHTML
 
 renders innerHTML, can be a string or DOM, based on property value of model
