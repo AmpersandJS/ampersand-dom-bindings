@@ -2,13 +2,11 @@ var test = require('tape');
 var domBindings = require('../ampersand-dom-bindings');
 var dom = require('ampersand-dom');
 
-
 function getEl(html) {
     var div = document.createElement('div');
     if (html) div.innerHTML = html;
     return div;
 }
-
 
 test('text bindings', function (t) {
     var el = getEl('<span class="thing" data-hook="hello"></span>');
@@ -176,7 +174,6 @@ add/removes class based on boolean interpretation of property name.
 }
 ```
 */
-
 
 test('booleanClass bindings', function (t) {
     var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
@@ -618,7 +615,6 @@ test('selector will find root *and* children', function (t) {
     t.end();
 });
 
-
 // Custom bindings
 test('custom binding', function (t) {
     var el = getEl('<span class="thing"></span>');
@@ -814,7 +810,6 @@ test('switch', function (t) {
     var bindings = domBindings({
         'model': {
             type: 'switch',
-            name: 'yes',
             cases: {
                 foo: '.foo',
                 bar: '.bar',
@@ -858,6 +853,42 @@ test('switch', function (t) {
     t.end();
 });
 
+test('switch with spaces', function (t) {
+    var el = getEl('<div class="foo"></div><div class="bar"></div><div class="baz"></div>');
+    var bindings = domBindings({
+        'model': {
+            type: 'switch',
+            cases: {
+                'not sent': '.bar',
+                'finished': '.foo'
+            }
+        }
+    });
+
+    var foo = el.children[0];
+    var bar = el.children[1];
+
+    t.equal(foo.style.display, '', 'base case');
+    t.equal(bar.style.display, '', 'base case');
+
+    bindings.run('', null, el, 'finished');
+
+    t.equal(foo.style.display, '');
+    t.equal(bar.style.display, 'none');
+
+    bindings.run('', null, el, 'not sent');
+
+    t.equal(foo.style.display, 'none');
+    t.equal(bar.style.display, '', 'show bar');
+
+    bindings.run('', null, el, 'something else');
+
+    t.equal(foo.style.display, 'none');
+    t.equal(bar.style.display, 'none');
+
+    t.end();
+});
+
 // TODO: tests for multiple bindings in one declaration
 
 test('Issue #20, Ensure support for space-separated `data-hook`s', function (t) {
@@ -877,7 +908,6 @@ test('Issue #20, Ensure support for space-separated `data-hook`s', function (t) 
 
     t.end();
 });
-
 
 test('handle yes/no cases for `booleanClass` when missing `yes` or `no`', function (t) {
     var el = getEl('<span></span>');
