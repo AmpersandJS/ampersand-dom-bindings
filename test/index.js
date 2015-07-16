@@ -98,7 +98,7 @@ test('attribute array bindings', function (t) {
     t.end();
 });
 
-test('value bindings', function (t) {
+test('value bindings - case 1', function (t) {
     var input = getEl('<input class="thing" type="text">');
     var select = getEl('<select class="thing"><option value=""></option><option value="hello"></option><option value="string"></option></select>');
     var textarea = getEl('<textarea class="thing"></textarea>');
@@ -131,7 +131,7 @@ test('value bindings', function (t) {
     t.end();
 });
 
-test('value bindings', function (t) {
+test('value bindings - case 2', function (t) {
     var input = getEl('<input class="thing" type="text">');
     var select = getEl('<select class="thing"><option value=""></option><option value="hello"></option><option value="string"></option></select>');
     var textarea = getEl('<textarea class="thing"></textarea>');
@@ -885,6 +885,44 @@ test('switch with spaces', function (t) {
 
     t.equal(foo.style.display, 'none');
     t.equal(bar.style.display, 'none');
+
+    t.end();
+});
+
+test('Switch should not assume unique values - issue #40', function (t) {
+    var el = getEl('<div id="one"></div><div id="two"></div>');
+    var bindings = domBindings({
+        model: {
+            type: 'switch',
+            cases: {
+                'one': '#one',
+                'two': '#one',
+                'three': '#two'
+            }
+        }
+    });
+
+    var one = el.children[0];
+    var two = el.children[1];
+
+    t.equal(one.style.display, '', 'base case');
+    t.equal(two.style.display, '', 'base case');
+
+    bindings.run('', null, el, 'one');
+    t.equal(one.style.display, '', 'case = one');
+    t.equal(two.style.display, 'none', 'case = one');
+
+    bindings.run('', null, el, 'two');
+    t.equal(one.style.display, '', 'case = two');
+    t.equal(two.style.display, 'none', 'case = two');
+
+    bindings.run('', null, el, 'three');
+    t.equal(one.style.display, 'none', 'case = three');
+    t.equal(two.style.display, '', 'case = three');
+
+    bindings.run('', null, el, 'four');
+    t.equal(one.style.display, 'none', 'case = four');
+    t.equal(two.style.display, 'none', 'case = four');
 
     t.end();
 });
