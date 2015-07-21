@@ -8,9 +8,7 @@
       "ampersand-version"
     ]
   },
-  "bugs": {
-    "url": "https://github.com/ampersandjs/ampersand-dom-bindings/issues"
-  },
+  "repository": "ampersandjs/ampersand-dom-bindings",
   "files": [
     "ampersand-dom-bindings.js"
   ],
@@ -23,7 +21,7 @@
     "matches-selector": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^10.2.6",
+    "browserify": "^11.0.0",
     "jshint": "^2.5.6",
     "phantomjs": "^1.9.7-15",
     "precommit-hook": "^3.0.0",
@@ -32,7 +30,6 @@
     "tape": "^4.0.0",
     "tape-run": "^1.0.0"
   },
-  "homepage": "https://github.com/ampersandjs/ampersand-dom-bindings",
   "keywords": [
     "dom",
     "bindings",
@@ -40,14 +37,14 @@
   ],
   "license": "MIT",
   "main": "ampersand-dom-bindings.js",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/ampersandjs/ampersand-dom-bindings"
-  },
   "scripts": {
     "start": "run-browser test/index.js",
     "test": "browserify test/index.js | tape-run | tap-spec",
     "lint": "jshint .",
+    "preversion": "git checkout master && git pull && npm ls",
+    "publish-patch": "npm run preversion && npm version patch && git push origin master --tags && npm publish",
+    "publish-minor": "npm run preversion && npm version minor && git push origin master --tags && npm publish",
+    "publish-major": "npm run preversion && npm version major && git push origin master --tags && npm publish",
     "validate": "npm ls"
   },
   "testling": {
