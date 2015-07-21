@@ -2,7 +2,7 @@
 var Store = require('key-tree-store');
 var dom = require('ampersand-dom');
 var matchesSelector = require('matches-selector');
-
+var partial = require('lodash.partial');
 
 // returns a key-tree-store of functions
 // that can be applied to any element/model.
@@ -32,7 +32,6 @@ module.exports = function (bindings, context) {
     return store;
 };
 
-
 var slice = Array.prototype.slice;
 
 function getMatches(el, selector) {
@@ -56,6 +55,23 @@ function removeAttributes(el, attrs) {
 
 function makeArray(val) {
     return Array.isArray(val) ? val : [val];
+}
+
+function switchHandler(binding, el, value) {
+    // the element selector to show
+    var showValue = binding.cases[value];
+    // hide all the other elements with a different value
+    for (var item in binding.cases) {
+        var curValue = binding.cases[item];
+        if (value !== item && curValue !== showValue) {
+            getMatches(el, curValue).forEach(function (match) {
+                dom.hide(match);
+            });
+        }
+    }
+    getMatches(el, showValue).forEach(function (match) {
+        dom.show(match);
+    });
 }
 
 function getBindingFunc(binding, context) {
@@ -196,13 +212,7 @@ function getBindingFunc(binding, context) {
         }
     } else if (type === 'switch') {
         if (!binding.cases) throw Error('switch bindings must have "cases"');
-        return function (el, value) {
-            for (var item in binding.cases) {
-                getMatches(el, binding.cases[item]).forEach(function (match) {
-                    dom[value === item ? 'show' : 'hide'](match);
-                });
-            }
-        };
+        return partial(switchHandler, binding);
     } else if (type === 'innerHTML') {
         return function (el, value) {
             getMatches(el, selector).forEach(function (match) {
