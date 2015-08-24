@@ -3,35 +3,6 @@ var Store = require('key-tree-store');
 var dom = require('ampersand-dom');
 var matchesSelector = require('matches-selector');
 var partial = require('lodash.partial');
-
-// returns a key-tree-store of functions
-// that can be applied to any element/model.
-
-// all resulting functions should be called
-// like func(el, value, lastKeyName)
-module.exports = function (bindings, context) {
-    var store = new Store();
-    var key, current;
-
-    for (key in bindings) {
-        current = bindings[key];
-        if (typeof current === 'string') {
-            store.add(key, getBindingFunc({
-                type: 'text',
-                selector: current
-            }));
-        } else if (current.forEach) {
-            current.forEach(function (binding) {
-                store.add(key, getBindingFunc(binding, context));
-            });
-        } else {
-            store.add(key, getBindingFunc(current, context));
-        }
-    }
-
-    return store;
-};
-
 var slice = Array.prototype.slice;
 
 function getMatches(el, selector) {
@@ -74,18 +45,20 @@ function switchHandler(binding, el, value) {
     });
 }
 
+function getSelector(binding) {
+    if (typeof binding.selector === 'string') {
+        return binding.selector;
+    } else if (binding.hook) {
+        return '[data-hook~="' + binding.hook + '"]';
+    } else {
+        return '';
+    }
+}
+
 function getBindingFunc(binding, context) {
     var type = binding.type || 'text';
     var isCustomBinding = typeof type === 'function';
-    var selector = (function () {
-        if (typeof binding.selector === 'string') {
-            return binding.selector;
-        } else if (binding.hook) {
-            return '[data-hook~="' + binding.hook + '"]';
-        } else {
-            return '';
-        }
-    })();
+    var selector = getSelector(binding);
     var yes = binding.yes;
     var no = binding.no;
     var hasYesNo = !!(yes || no);
@@ -255,3 +228,31 @@ function getBindingFunc(binding, context) {
         throw new Error('no such binding type: ' + type);
     }
 }
+
+// returns a key-tree-store of functions
+// that can be applied to any element/model.
+
+// all resulting functions should be called
+// like func(el, value, lastKeyName)
+module.exports = function (bindings, context) {
+    var store = new Store();
+    var key, current;
+
+    for (key in bindings) {
+        current = bindings[key];
+        if (typeof current === 'string') {
+            store.add(key, getBindingFunc({
+                type: 'text',
+                selector: current
+            }));
+        } else if (current.forEach) {
+            current.forEach(function (binding) {
+                store.add(key, getBindingFunc(binding, context));
+            });
+        } else {
+            store.add(key, getBindingFunc(current, context));
+        }
+    }
+
+    return store;
+};
