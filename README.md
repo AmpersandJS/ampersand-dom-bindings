@@ -16,6 +16,36 @@ The returned functions should be called with these arguments: The root element, 
 npm install ampersand-dom-bindings
 ```
 
+## Usage
+
+`domBindings(bindings, context)`
+
+```js
+// Use default binding of text
+var bindings = domBindings({
+    'model.name': '.any-selector'
+});
+
+// Use an array of bindings
+var bindings = domBindings({
+    'model.name': [{
+        type: 'text',
+        selector: '.any-selector'
+    }, {
+        type: 'text',
+        hook: 'some-hook'
+    }]
+});
+
+// Use as a regular binding
+var bindings = domBindings({
+    'model.name': {
+        type: 'text',
+        selector: '.any-selector'
+    }
+});
+```
+
 ## Binding types
 
 ### text
@@ -42,9 +72,9 @@ sets and maintains single class as string that matches value of property
 }
 ```
 
-### attribute 
+### attribute
 sets the whole attribute to match value of property. treats `undefined`, `null`, and `NaN` as `''` (empty string). `name` can also be an array to set multiple attributes to the same value.
-    
+
 ```js
 'model.key': {
     type: 'attribute',
@@ -58,7 +88,7 @@ sets the whole attribute to match value of property. treats `undefined`, `null`,
 sets the value of the element to match value of the property. works well for `input`, `select`, and `textarea` elements. treats `undefined`, `null`, and `NaN` as `''` (empty string).
 
 **note**: The binding will only be applied if the element is not currently in focus. This is done by checking to see if the element is the `document.activeElement` first. The reason it works this way is because if you've set up two-way data bindings you get a circular event: the input changes, which sets the bound model property, which in turn updates the value of the input. This might sound OK but results in the cursor always jumping to the end of the input/textarea. So if you're editing the middle of a bound text field, the cursor keeps jumping to the end. We avoid this by making sure it's not already in focus thus avoiding the bad loop.
-    
+
 ```js
 'model.key': {
     type: 'value',
@@ -244,7 +274,6 @@ The `attribute`, `booleanAttribute` and `booleanClass` types also accept an arra
 }
 ```
 
-
 ## binding using `data-hook` attribute
 
 We've started using this convention a lot, rather than using classes and IDs in JS to select elements within a view, we use the `data-hook` attribute. This lets designers edit templates without fear of breaking something by changing a class. It works wonderfully, but the only thing that sucks about that is the syntax of attribute selectors: `[data-hook=some-hook]` is a bit annoying to type a million types, and also in JS-land when coding and we see `[` we always assume arrays.
@@ -273,13 +302,11 @@ So for each of these bindings you can either use `selector` or `hook`, so these 
 }
 ```
 
-
 ## real life example
 
 ```js
 var View = require('ampersand-view');
 var templates = require('../templates');
-
 
 module.exports = View.extend({
     template: templates.includes.app,
@@ -298,7 +325,7 @@ module.exports = View.extend({
 
 ## other benefits
 
-Previously after having given views the ability to have their own properties (since view inherits from state) it was awkward to bind those to the DOM. Also, for binding things that were not just `this.model` the syntax had to change. 
+Previously after having given views the ability to have their own properties (since view inherits from state) it was awkward to bind those to the DOM. Also, for binding things that were not just `this.model` the syntax had to change.
 
 Now this is fairly simple/obvious:
 
