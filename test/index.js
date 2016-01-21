@@ -537,15 +537,15 @@ test('switchAttribute with boolean/undefined properties', function(t) {
 
     t.strictEqual(dom.getAttribute(el, 'style'), null, 'el should not have the attribute "style"');
 
+
     bindings.run('', null, el, true);
-    //IE 10 adds a ; to attributes so we have to regex test here
-    t.ok(/display: block;?$/.test(dom.getAttribute(el, 'style')));
+    t.ok(/^display: block;?$/.test(dom.getAttribute(el, 'style'))); //IE returns style w/ trailing semicolon
 
     bindings.run('', null, el, false);
-    t.ok(/display: none;?$/.test(dom.getAttribute(el, 'style')));
+    t.ok(/^display: none;?$/.test(dom.getAttribute(el, 'style'))); //IE returns style w/ trailing semicolon
 
     bindings.run('', null, el, undefined);
-    t.ok(/color: gray;?$/.test(dom.getAttribute(el, 'style')));
+    t.ok(/^color: gray;?$/.test(dom.getAttribute(el, 'style'))); //IE returns style w/ trailing semicolon
 
     t.end();
 });
