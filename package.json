@@ -20,14 +20,11 @@
     "matches-selector": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^11.0.0",
     "jshint": "^2.5.6",
-    "phantomjs": "^1.9.7-15",
+    "phantomjs": "^1.9.19",
     "precommit-hook": "^3.0.0",
-    "run-browser": "^2.0.2",
-    "tap-spec": "^4.0.2",
     "tape": "^4.0.0",
-    "tape-run": "^1.0.0"
+    "zuul": "^3.9.0"
   },
   "keywords": [
     "dom",
@@ -37,30 +34,15 @@
   "license": "MIT",
   "main": "ampersand-dom-bindings.js",
   "scripts": {
-    "start": "run-browser test/index.js",
-    "test": "browserify test/index.js | tape-run | tap-spec",
+    "start": "zuul --local -- test/index.js",
+    "test": "zuul --phantom -- test/index.js",
+    "test-ci": "zuul -- test/index.js",
     "lint": "jshint .",
     "preversion": "git checkout master && git pull && npm ls",
     "publish-patch": "npm run preversion && npm version patch && git push origin master --tags && npm publish",
     "publish-minor": "npm run preversion && npm version minor && git push origin master --tags && npm publish",
     "publish-major": "npm run preversion && npm version major && git push origin master --tags && npm publish",
     "validate": "npm ls"
-  },
-  "testling": {
-    "files": "test/*.js",
-    "browsers": [
-      "ie/8..latest",
-      "firefox/17..latest",
-      "firefox/nightly",
-      "chrome/22..latest",
-      "chrome/canary",
-      "opera/12..latest",
-      "opera/next",
-      "safari/5.1..latest",
-      "ipad/6.0..latest",
-      "iphone/6.0..latest",
-      "android-browser/4.2..latest"
-    ]
   },
   "pre-commit": [
     "lint",
