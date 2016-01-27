@@ -111,6 +111,13 @@ toggles visibility (using display: none by default) of entire element based on b
     selector: '#something' // or hook
 }
 
+// Reverse/opposite interpretation of property
+'model.key': {
+    type: 'toggle',
+    opposite: true,
+    hook: 'some-element'
+}
+
 // toggle visibility property instead
 'model.key': {
     type: 'toggle',
