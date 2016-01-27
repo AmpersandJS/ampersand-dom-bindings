@@ -712,6 +712,31 @@ test('basic toggle', function (t) {
     t.end();
 });
 
+test('toggle with opposite interpretation', function (t) {
+    var el = getEl('<span></span>');
+    var bindings = domBindings({
+        'model1': {
+            type: 'toggle',
+            opposite: true,
+            selector: 'span'
+        }
+    });
+
+    var span = el.children[0];
+    t.equal(span.style.display, '', 'base case');
+
+    bindings.run('model1', null, el, false);
+    t.equal(span.style.display, '', 'base case');
+
+    bindings.run('model1', null, el, true);
+    t.equal(span.style.display, '', 'should now be hidden');
+
+    bindings.run('model1', null, el, true);
+    t.equal(span.style.display, 'none', 'should now be visible');
+
+    t.end();
+});
+
 test('toggle visibility property', function (t) {
     var el = getEl('<span></span>');
     var bindings = domBindings({
