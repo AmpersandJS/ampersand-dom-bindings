@@ -166,6 +166,7 @@ function getBindingFunc(binding, context) {
         }
     } else if (type === 'toggle') {
         var mode = (binding.mode || 'display');
+        var opposite = (binding.opposite || false);
         // this doesn't require a selector since we can pass yes/no selectors
         if (hasYesNo) {
             return function (el, value) {
@@ -178,6 +179,7 @@ function getBindingFunc(binding, context) {
             };
         } else {
             return function (el, value) {
+                value = (opposite ? (value ? false : true) : value);
                 getMatches(el, selector).forEach(function (match) {
                     dom[value ? 'show' : 'hide'](match, mode);
                 });
