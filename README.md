@@ -42,9 +42,9 @@ sets and maintains single class as string that matches value of property
 }
 ```
 
-### attribute 
+### attribute
 sets the whole attribute to match value of property. treats `undefined`, `null`, and `NaN` as `''` (empty string). `name` can also be an array to set multiple attributes to the same value.
-    
+
 ```js
 'model.key': {
     type: 'attribute',
@@ -58,7 +58,7 @@ sets the whole attribute to match value of property. treats `undefined`, `null`,
 sets the value of the element to match value of the property. works well for `input`, `select`, and `textarea` elements. treats `undefined`, `null`, and `NaN` as `''` (empty string).
 
 **note**: The binding will only be applied if the element is not currently in focus. This is done by checking to see if the element is the `document.activeElement` first. The reason it works this way is because if you've set up two-way data bindings you get a circular event: the input changes, which sets the bound model property, which in turn updates the value of the input. This might sound OK but results in the cursor always jumping to the end of the input/textarea. So if you're editing the middle of a bound text field, the cursor keeps jumping to the end. We avoid this by making sure it's not already in focus thus avoiding the bad loop.
-    
+
 ```js
 'model.key': {
     type: 'value',
@@ -85,7 +85,7 @@ add/removes class based on boolean interpretation of property name. `name`, `yes
 
 ### booleanAttribute
 
-toggles whole attribute on the element (think `checked`) based on boolean interpretation of property name. `name` can also be an array of attribute names where all the values will be toggled.
+toggles whole attribute on the element (think `checked`) based on boolean interpretation of property name. `name` can also be an array of attribute names where all the values will be toggled. If you need the opposite effect, (`false` adds class, `true` removes class), specify `opposite: true`.
 
 ```js
 'model.isAwesome': {
@@ -97,6 +97,8 @@ toggles whole attribute on the element (think `checked`) based on boolean interp
     // or a yes/no case
     yes: 'data-is-awesome',
     no: 'data-is-not-awesome'
+    // if you need opposite interpretation
+    opposite: true
 }
 ```
 
@@ -305,7 +307,7 @@ module.exports = View.extend({
 
 ## other benefits
 
-Previously after having given views the ability to have their own properties (since view inherits from state) it was awkward to bind those to the DOM. Also, for binding things that were not just `this.model` the syntax had to change. 
+Previously after having given views the ability to have their own properties (since view inherits from state) it was awkward to bind those to the DOM. Also, for binding things that were not just `this.model` the syntax had to change.
 
 Now this is fairly simple/obvious:
 

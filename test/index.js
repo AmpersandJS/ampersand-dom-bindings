@@ -300,6 +300,28 @@ test('booleanAttribute bindings', function (t) {
     t.end();
 });
 
+test('booleanAttribute bindings opposite interpretation', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanAttribute',
+            selector: '.thing',
+            opposite: true,
+            name: 'checked'
+        }
+    });
+
+    t.notOk(el.firstChild.checked, 'should not be checked to start');
+
+    bindings.run('', null, el, false, 'checked');
+    t.ok(el.firstChild.checked, 'should checked');
+
+    bindings.run('', null, el, true, 'checked');
+    t.notOk(el.firstChild.checked, 'should not be checked');
+
+    t.end();
+});
+
 test('booleanAttribute array bindings', function (t) {
     var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
