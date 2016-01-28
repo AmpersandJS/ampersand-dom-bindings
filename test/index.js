@@ -729,10 +729,10 @@ test('toggle with opposite interpretation', function (t) {
     t.equal(span.style.display, '', 'base case');
 
     bindings.run('model1', null, el, true);
-    t.equal(span.style.display, '', 'should now be hidden');
+    t.equal(span.style.display, 'none', 'should now be hidden');
 
-    bindings.run('model1', null, el, true);
-    t.equal(span.style.display, 'none', 'should now be visible');
+    bindings.run('model1', null, el, false);
+    t.equal(span.style.display, '', 'should now be visible');
 
     t.end();
 });
