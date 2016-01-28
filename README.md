@@ -68,7 +68,7 @@ sets the value of the element to match value of the property. works well for `in
 
 ### booleanClass
 
-add/removes class based on boolean interpretation of property name. `name`, `yes`, or `no` can also be an array of class names where all the values will be toggled. If you need the opposite effect, (`false` adds class, `true` removes class), specify `opposite: true`.
+add/removes class based on boolean interpretation of property name. `name`, `yes`, or `no` can also be an array of class names where all the values will be toggled. If you need the opposite effect, (`false` adds class, `true` removes class), specify `invert: true`.
 
 ```js
 'model.active': {
@@ -80,14 +80,14 @@ add/removes class based on boolean interpretation of property name. `name`, `yes
     // or a yes/no case
     yes: 'active',
     no: 'not-active'
-    // if you need opposite interpretation
-    opposite: true
+    // if you need inverse interpretation
+    invert: true
 }
 ```
 
 ### booleanAttribute
 
-toggles whole attribute on the element (think `checked`) based on boolean interpretation of property name. `name` can also be an array of attribute names where all the values will be toggled. If you need the opposite effect, (`false` adds class, `true` removes class), specify `opposite: true`.
+toggles whole attribute on the element (think `checked`) based on boolean interpretation of property name. `name` can also be an array of attribute names where all the values will be toggled. If you need the opposite effect, (`false` adds class, `true` removes class), specify `invert: true`.
 
 ```js
 'model.isAwesome': {
@@ -99,8 +99,8 @@ toggles whole attribute on the element (think `checked`) based on boolean interp
     // or a yes/no case
     yes: 'data-is-awesome',
     no: 'data-is-not-awesome'
-    // if you need opposite interpretation
-    opposite: true
+    // if you need inverse interpretation
+    invert: true
 }
 ```
 
@@ -115,10 +115,10 @@ toggles visibility (using display: none by default) of entire element based on b
     selector: '#something' // or hook
 }
 
-// Reverse/opposite interpretation of property
+// Inverse interpretation of property
 'model.key': {
     type: 'toggle',
-    opposite: true,
+    invert: true,
     hook: 'some-element'
 }
 

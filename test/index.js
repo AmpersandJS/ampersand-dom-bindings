@@ -171,8 +171,8 @@ add/removes class based on boolean interpretation of property name.
     // or a yes/no case
     yes: 'active',
     no: 'not-active'
-    // if you need opposite interpretation
-    opposite: true
+    // if you need inverse interpretation
+    invert: true
 }
 ```
 */
@@ -198,13 +198,13 @@ test('booleanClass bindings', function (t) {
     t.end();
 });
 
-test('booleanClass bindings opposite interpretation', function (t) {
+test('booleanClass bindings inverse interpretation', function (t) {
     var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanClass',
             selector: '.thing',
-            opposite: true,
+            invert: true,
             name: 'awesome'
         }
     });
@@ -269,13 +269,13 @@ test('booleanClass array bindings', function (t) {
     t.end();
 });
 
-test('booleanClass array bindings opposite interpretation', function (t) {
+test('booleanClass array bindings inverse interpretation', function (t) {
     var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanClass',
             selector: '.thing',
-            opposite: true,
+            invert: true,
             name: ['class1', 'class2']
         }
     });
@@ -349,13 +349,13 @@ test('booleanAttribute bindings', function (t) {
     t.end();
 });
 
-test('booleanAttribute bindings opposite interpretation', function (t) {
+test('booleanAttribute bindings inverse interpretation', function (t) {
     var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanAttribute',
             selector: '.thing',
-            opposite: true,
+            invert: true,
             name: 'checked'
         }
     });
@@ -395,13 +395,13 @@ test('booleanAttribute array bindings', function (t) {
     t.end();
 });
 
-test('booleanAttribute array bindings opposite interpretation', function (t) {
+test('booleanAttribute array bindings inverse interpretation', function (t) {
     var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
         'model': {
             type: 'booleanAttribute',
             selector: '.thing',
-            opposite: true,
+            invert: true,
             name: ['disabled', 'readOnly']
         }
     });
@@ -808,12 +808,12 @@ test('basic toggle', function (t) {
     t.end();
 });
 
-test('toggle with opposite interpretation', function (t) {
+test('toggle with inverse interpretation', function (t) {
     var el = getEl('<span></span>');
     var bindings = domBindings({
         'model1': {
             type: 'toggle',
-            opposite: true,
+            invert: true,
             selector: 'span'
         }
     });
