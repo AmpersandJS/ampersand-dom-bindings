@@ -68,7 +68,7 @@ sets the value of the element to match value of the property. works well for `in
 
 ### booleanClass
 
-add/removes class based on boolean interpretation of property name. `name`, `yes`, or `no` can also be an array of class names where all the values will be toggled.
+add/removes class based on boolean interpretation of property name. `name`, `yes`, or `no` can also be an array of class names where all the values will be toggled. If you need the opposite effect, (`false` adds class, `true` removes class), specify `opposite: true`.
 
 ```js
 'model.active': {
@@ -80,6 +80,8 @@ add/removes class based on boolean interpretation of property name. `name`, `yes
     // or a yes/no case
     yes: 'active',
     no: 'not-active'
+    // if you need opposite interpretation
+    opposite: true
 }
 ```
 
