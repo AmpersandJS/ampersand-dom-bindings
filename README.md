@@ -87,7 +87,7 @@ add/removes class based on boolean interpretation of property name. `name`, `yes
 
 ### booleanAttribute
 
-toggles whole attribute on the element (think `checked`) based on boolean interpretation of property name. `name` can also be an array of attribute names where all the values will be toggled. If you need the opposite effect, (`false` adds class, `true` removes class), specify `invert: true`.
+toggles whole attribute on the element (think `checked`) based on boolean interpretation of property name. `name` can also be an array of attribute names where all the values will be toggled. If you need the opposite effect, (`false` adds attribute, `true` removes attribute), specify `invert: true`.
 
 ```js
 'model.isAwesome': {
