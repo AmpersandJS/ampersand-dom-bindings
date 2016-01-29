@@ -171,6 +171,8 @@ add/removes class based on boolean interpretation of property name.
     // or a yes/no case
     yes: 'active',
     no: 'not-active'
+    // if you need inverse interpretation
+    invert: true
 }
 ```
 */
@@ -190,6 +192,28 @@ test('booleanClass bindings', function (t) {
 
     t.ok(dom.hasClass(el.firstChild, 'awesome'));
     bindings.run('', null, el, false);
+
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'));
+
+    t.end();
+});
+
+test('booleanClass bindings inverse interpretation', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanClass',
+            selector: '.thing',
+            invert: true,
+            name: 'awesome'
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'awesome'));
+    bindings.run('', null, el, false);
+
+    t.ok(dom.hasClass(el.firstChild, 'awesome'));
+    bindings.run('', null, el, true);
 
     t.notOk(dom.hasClass(el.firstChild, 'awesome'));
 
@@ -239,6 +263,31 @@ test('booleanClass array bindings', function (t) {
     t.ok(dom.hasClass(el.firstChild, 'class2'));
 
     bindings.run('', null, el, false);
+    t.notOk(dom.hasClass(el.firstChild, 'class1'));
+    t.notOk(dom.hasClass(el.firstChild, 'class2'));
+
+    t.end();
+});
+
+test('booleanClass array bindings inverse interpretation', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanClass',
+            selector: '.thing',
+            invert: true,
+            name: ['class1', 'class2']
+        }
+    });
+
+    t.notOk(dom.hasClass(el.firstChild, 'class1'));
+    t.notOk(dom.hasClass(el.firstChild, 'class2'));
+
+    bindings.run('', null, el, false);
+    t.ok(dom.hasClass(el.firstChild, 'class1'));
+    t.ok(dom.hasClass(el.firstChild, 'class2'));
+
+    bindings.run('', null, el, true);
     t.notOk(dom.hasClass(el.firstChild, 'class1'));
     t.notOk(dom.hasClass(el.firstChild, 'class2'));
 
@@ -300,6 +349,28 @@ test('booleanAttribute bindings', function (t) {
     t.end();
 });
 
+test('booleanAttribute bindings inverse interpretation', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanAttribute',
+            selector: '.thing',
+            invert: true,
+            name: 'checked'
+        }
+    });
+
+    t.notOk(el.firstChild.checked, 'should not be checked to start');
+
+    bindings.run('', null, el, false, 'checked');
+    t.ok(el.firstChild.checked, 'should checked');
+
+    bindings.run('', null, el, true, 'checked');
+    t.notOk(el.firstChild.checked, 'should not be checked');
+
+    t.end();
+});
+
 test('booleanAttribute array bindings', function (t) {
     var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
     var bindings = domBindings({
@@ -318,6 +389,31 @@ test('booleanAttribute array bindings', function (t) {
     t.ok(el.firstChild.readOnly, 'should readOnly');
 
     bindings.run('', null, el, false, 'disabled, readOnly');
+    t.notOk(el.firstChild.disabled, 'should not be disabled');
+    t.notOk(el.firstChild.readOnly, 'should not be readOnly');
+
+    t.end();
+});
+
+test('booleanAttribute array bindings inverse interpretation', function (t) {
+    var el = getEl('<input type="checkbox" class="thing" data-hook="some-hook">');
+    var bindings = domBindings({
+        'model': {
+            type: 'booleanAttribute',
+            selector: '.thing',
+            invert: true,
+            name: ['disabled', 'readOnly']
+        }
+    });
+
+    t.notOk(el.firstChild.disabled, 'should not be disabled to start');
+    t.notOk(el.firstChild.readOnly, 'should not be readOnly to start');
+
+    bindings.run('', null, el, false, 'disabled, readOnly');
+    t.ok(el.firstChild.disabled, 'should disabled');
+    t.ok(el.firstChild.readOnly, 'should readOnly');
+
+    bindings.run('', null, el, true, 'disabled, readOnly');
     t.notOk(el.firstChild.disabled, 'should not be disabled');
     t.notOk(el.firstChild.readOnly, 'should not be readOnly');
 
@@ -707,6 +803,31 @@ test('basic toggle', function (t) {
     t.equal(span.style.display, 'none', 'should now be hidden');
 
     bindings.run('model1', null, el, true);
+    t.equal(span.style.display, '', 'should now be visible');
+
+    t.end();
+});
+
+test('toggle with inverse interpretation', function (t) {
+    var el = getEl('<span></span>');
+    var bindings = domBindings({
+        'model1': {
+            type: 'toggle',
+            invert: true,
+            selector: 'span'
+        }
+    });
+
+    var span = el.children[0];
+    t.equal(span.style.display, '', 'base case');
+
+    bindings.run('model1', null, el, false);
+    t.equal(span.style.display, '', 'base case');
+
+    bindings.run('model1', null, el, true);
+    t.equal(span.style.display, 'none', 'should now be hidden');
+
+    bindings.run('model1', null, el, false);
     t.equal(span.style.display, '', 'should now be visible');
 
     t.end();
