@@ -8,10 +8,16 @@ var slice = Array.prototype.slice;
 function getMatches(el, selector) {
     if (selector === '') return [el];
     var matches = [];
-    if (matchesSelector(el, selector)) matches.push(el);
-    return matches.concat(slice.call(el.querySelectorAll(selector)));
+    if(!selector) return matches;
+    if(selector.firstMatchOnly) {
+        //interactar modification to retrieve only firstMatchOnly element
+        if (matchesSelector(el, selector.firstMatchOnly)) return [el];
+        return matches.concat(slice.call([el.querySelector(selector.firstMatchOnly) || el]));
+    }else{
+        if (matchesSelector(el, selector)) matches.push(el);
+        return matches.concat(slice.call(el.querySelectorAll(selector)));
+    }
 }
-
 function setAttributes(el, attrs) {
     for (var name in attrs) {
         dom.setAttribute(el, name, attrs[name]);
@@ -46,12 +52,22 @@ function switchHandler(binding, el, value) {
 }
 
 function getSelector(binding) {
-    if (typeof binding.selector === 'string') {
-        return binding.selector;
-    } else if (binding.hook) {
-        return '[data-hook~="' + binding.hook + '"]';
-    } else {
-        return '';
+    if(binding.firstMatchOnly !== undefined && binding.firstMatchOnly === true) {
+        if (typeof binding.selector === 'string') {
+            return {firstMatchOnly:binding.selector};
+        } else if (binding.hook) {
+            return {firstMatchOnly:'[data-hook~="' + binding.hook + '"]'};
+        } else {
+            return {firstMatchOnly:''};
+        }
+    }else{
+        if (typeof binding.selector === 'string') {
+          return binding.selector;
+        } else if (binding.hook) {
+          return '[data-hook~="' + binding.hook + '"]';
+        } else {
+          return '';
+        }
     }
 }
 
