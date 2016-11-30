@@ -1173,3 +1173,22 @@ test('handle yes/no cases for `toggle` when missing `yes` or `no`', function (t)
 
     t.end();
 });
+
+test('firstMatchOnly option should work on the first occurrence', function(t){
+    var el = getEl('<span data-hook="foo"></span><span data-hook="foo"></span>');
+    var bindings = domBindings({
+        'model': {
+            type: 'text',
+            hook: 'foo',
+            firstMatchOnly: true
+        }
+    });
+
+    var child0 = el.children[0];
+    var child1 = el.children[1];
+    // t.notEqual(el.firstChild.textContent, 'hello');
+    bindings.run('model', null, el, 'hello');
+    t.equal(child0.textContent, 'hello');
+    t.notEqual(child1.textContent, 'hello');
+    t.end();
+});
