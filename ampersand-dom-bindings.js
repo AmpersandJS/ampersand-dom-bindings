@@ -10,7 +10,6 @@ function getMatches(el, selector) {
     var matches = [];
     if(!selector) return matches;
     if(selector.firstMatchOnly) {
-        //interactar modification to retrieve only firstMatchOnly element
         if (matchesSelector(el, selector.firstMatchOnly)) return [el];
         return matches.concat(slice.call([el.querySelector(selector.firstMatchOnly) || el]));
     }else{
