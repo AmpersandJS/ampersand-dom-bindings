@@ -5,14 +5,13 @@ var matchesSelector = require('matches-selector');
 var partial = require('lodash.partial');
 var slice = Array.prototype.slice;
 
-function getMatches(el, selector) {
+function getMatches(el, selector, firstOnly) {
     if (selector === '') return [el];
     var matches = [];
     if(!selector) return matches;
-    if(selector.firstMatchOnly) {
-        //interactar modification to retrieve only firstMatchOnly element
-        if (matchesSelector(el, selector.firstMatchOnly)) return [el];
-        return matches.concat(slice.call([el.querySelector(selector.firstMatchOnly) || el]));
+    if(firstOnly) {
+        if (matchesSelector(el, selector)) return [el];
+        return matches.concat(slice.call([el.querySelector(selector) || el]));
     }else{
         if (matchesSelector(el, selector)) matches.push(el);
         return matches.concat(slice.call(el.querySelectorAll(selector)));
@@ -41,7 +40,7 @@ function switchHandler(binding, el, value) {
     for (var item in binding.cases) {
         var curValue = binding.cases[item];
         if (value !== item && curValue !== showValue) {
-            getMatches(el, curValue).forEach(function (match) {
+            getMatches(el, curValue, binding.firstMatchOnly).forEach(function (match) {
                 dom.hide(match);
             });
         }
@@ -52,22 +51,12 @@ function switchHandler(binding, el, value) {
 }
 
 function getSelector(binding) {
-    if(binding.firstMatchOnly !== undefined && binding.firstMatchOnly === true) {
-        if (typeof binding.selector === 'string') {
-            return {firstMatchOnly:binding.selector};
-        } else if (binding.hook) {
-            return {firstMatchOnly:'[data-hook~="' + binding.hook + '"]'};
-        } else {
-            return {firstMatchOnly:''};
-        }
-    }else{
-        if (typeof binding.selector === 'string') {
-          return binding.selector;
-        } else if (binding.hook) {
-          return '[data-hook~="' + binding.hook + '"]';
-        } else {
-          return '';
-        }
+    if (typeof binding.selector === 'string') {
+        return binding.selector;
+    } else if (binding.hook) {
+        return '[data-hook~="' + binding.hook + '"]';
+    } else {
+        return '';
     }
 }
 
@@ -75,6 +64,7 @@ function getBindingFunc(binding, context) {
     var type = binding.type || 'text';
     var isCustomBinding = typeof type === 'function';
     var selector = getSelector(binding);
+    var firstMatchOnly = binding.firstMatchOnly;
     var yes = binding.yes;
     var no = binding.no;
     var hasYesNo = !!(yes || no);
@@ -84,20 +74,20 @@ function getBindingFunc(binding, context) {
 
     if (isCustomBinding) {
         return function (el, value) {
-            getMatches(el, selector).forEach(function (match) {
+            getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                 type.call(context, match, value, previousValue);
             });
             previousValue = value;
         };
     } else if (type === 'text') {
         return function (el, value) {
-            getMatches(el, selector).forEach(function (match) {
+            getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                 dom.text(match, value);
             });
         };
     } else if (type === 'class') {
         return function (el, value) {
-            getMatches(el, selector).forEach(function (match) {
+            getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                 dom.switchClass(match, previousValue, value);
             });
             previousValue = value;
@@ -106,7 +96,7 @@ function getBindingFunc(binding, context) {
         if (!binding.name) throw Error('attribute bindings must have a "name"');
         return function (el, value) {
             var names = makeArray(binding.name);
-            getMatches(el, selector).forEach(function (match) {
+            getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                 names.forEach(function (name) {
                     dom.setAttribute(match, name, value);
                 });
@@ -115,7 +105,7 @@ function getBindingFunc(binding, context) {
         };
     } else if (type === 'value') {
         return function (el, value) {
-            getMatches(el, selector).forEach(function (match) {
+            getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                 if (!value && value !== 0) value = '';
                 // only apply bindings if element is not currently focused
                 if (document.activeElement !== match) match.value = value;
@@ -130,7 +120,7 @@ function getBindingFunc(binding, context) {
             return function (el, value) {
                 var prevClass = value ? no : yes;
                 var newClass = value ? yes : no;
-                getMatches(el, selector).forEach(function (match) {
+                getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                     prevClass.forEach(function (pc) {
                         dom.removeClass(match, pc);
                     });
@@ -144,7 +134,7 @@ function getBindingFunc(binding, context) {
                 var name = makeArray(binding.name || keyName);
                 var invert = (binding.invert || false);
                 value = (invert ? (value ? false : true) : value);
-                getMatches(el, selector).forEach(function (match) {
+                getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                     name.forEach(function (className) {
                         dom[value ? 'addClass' : 'removeClass'](match, className);
                     });
@@ -159,7 +149,7 @@ function getBindingFunc(binding, context) {
             return function (el, value) {
                 var prevAttribute = value ? no : yes;
                 var newAttribute = value ? yes : no;
-                getMatches(el, selector).forEach(function (match) {
+                getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                     prevAttribute.forEach(function (pa) {
                         if (pa) {
                             dom.removeAttribute(match, pa);
@@ -177,7 +167,7 @@ function getBindingFunc(binding, context) {
                 var name = makeArray(binding.name || keyName);
                 var invert = (binding.invert || false);
                 value = (invert ? (value ? false : true) : value);
-                getMatches(el, selector).forEach(function (match) {
+                getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                     name.forEach(function (attr) {
                         dom[value ? 'addAttribute' : 'removeAttribute'](match, attr);
                     });
@@ -190,17 +180,17 @@ function getBindingFunc(binding, context) {
         // this doesn't require a selector since we can pass yes/no selectors
         if (hasYesNo) {
             return function (el, value) {
-                getMatches(el, yes).forEach(function (match) {
+                getMatches(el, yes, firstMatchOnly).forEach(function (match) {
                     dom[value ? 'show' : 'hide'](match, mode);
                 });
-                getMatches(el, no).forEach(function (match) {
+                getMatches(el, no, firstMatchOnly).forEach(function (match) {
                     dom[value ? 'hide' : 'show'](match, mode);
                 });
             };
         } else {
             return function (el, value) {
                 value = (invert ? (value ? false : true) : value);
-                getMatches(el, selector).forEach(function (match) {
+                getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                     dom[value ? 'show' : 'hide'](match, mode);
                 });
             };
@@ -210,7 +200,7 @@ function getBindingFunc(binding, context) {
         return partial(switchHandler, binding);
     } else if (type === 'innerHTML') {
         return function (el, value) {
-            getMatches(el, selector).forEach(function (match) {
+            getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                 dom.html(match, value);
             });
         };
@@ -219,7 +209,7 @@ function getBindingFunc(binding, context) {
         return function (el, value, keyName) {
             var name = makeArray(binding.name || keyName);
             for (var item in binding.cases) {
-                getMatches(el, binding.cases[item]).forEach(function (match) {
+                getMatches(el, binding.cases[item], firstMatchOnly).forEach(function (match) {
                     name.forEach(function (className) {
                         dom[value === item ? 'addClass' : 'removeClass'](match, className);
                     });
@@ -229,7 +219,7 @@ function getBindingFunc(binding, context) {
     } else if (type === 'switchAttribute') {
         if (!binding.cases) throw Error('switchAttribute bindings must have "cases"');
         return function (el, value, keyName) {
-            getMatches(el, selector).forEach(function (match) {
+            getMatches(el, selector, firstMatchOnly).forEach(function (match) {
                 if (previousValue) {
                     removeAttributes(match, previousValue);
                 }
