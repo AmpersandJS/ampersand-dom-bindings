@@ -11,8 +11,7 @@ function getMatches(el, selector, firstOnly) {
     if(!selector) return matches;
     if(firstOnly) {
         if (matchesSelector(el, selector)) return [el];
-        // return el.querySelector(selector) ? [el.querySelector(selector)] : [];
-        return matches.concat(slice.call([el.querySelector(selector) || el]));
+        return el.querySelector(selector) ? [el.querySelector(selector)] : [];
     }else{
         if (matchesSelector(el, selector)) matches.push(el);
         return matches.concat(slice.call(el.querySelectorAll(selector)));
