@@ -36,16 +36,20 @@ function makeArray(val) {
 function switchHandler(binding, el, value) {
     // the element selector to show
     var showValue = binding.cases[value];
+
+    var firstMatchOnly = binding.firstMatchOnly;
+
     // hide all the other elements with a different value
     for (var item in binding.cases) {
         var curValue = binding.cases[item];
+
         if (value !== item && curValue !== showValue) {
-            getMatches(el, curValue, binding.firstMatchOnly).forEach(function (match) {
+            getMatches(el, curValue, firstMatchOnly).forEach(function (match) {
                 dom.hide(match);
             });
         }
     }
-    getMatches(el, showValue).forEach(function (match) {
+    getMatches(el, showValue, firstMatchOnly).forEach(function (match) {
         dom.show(match);
     });
 }

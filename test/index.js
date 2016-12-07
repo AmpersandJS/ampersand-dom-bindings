@@ -1192,3 +1192,58 @@ test('firstMatchOnly option should work on the first occurrence', function(t){
     t.notEqual(child1.textContent, 'hello');
     t.end();
 });
+
+test('firstMatchOnly option should work on a type switch cases', function (t) {
+    var el = getEl('<div class="foo"></div><div class="bar"></div><div class="bar"></div><div class="baz"></div>');
+    var bindings = domBindings({
+        'model': {
+            type: 'switch',
+            firstMatchOnly: true,
+            cases: {
+                foo: '.foo',
+                bar: '.bar',
+                baz: '.baz'
+            }
+        }
+    });
+
+    var foo = el.children[0];
+    var bar = el.children[1];
+    var barDupe = el.children[2]; // dupe .bar
+    var baz = el.children[3];
+
+    t.equal(foo.style.display, '', 'case .foo display should be empty (visible)');
+    t.equal(bar.style.display, '', 'case .bar, first match, display should be empty (visible)');
+    t.equal(barDupe.style.display, '', 'case .bar, second match, display should be empty (visible)');
+    t.equal(baz.style.display, '', 'case .baz display should be empty (visible)');
+
+    bindings.run('', null, el, 'foo');
+
+    t.equal(foo.style.display, '', 'case .foo display should be empty (visible)');
+    t.equal(bar.style.display, 'none', 'case .bar, first match, display should be "none"');
+    t.equal(barDupe.style.display, '', 'case .bar, second match, should remain empty (visible)');
+    t.equal(baz.style.display, 'none', 'case .baz display shuld be "none"');
+
+    bindings.run('', null, el, 'bar');
+
+    t.equal(foo.style.display, 'none', 'case .foo display should be "none"');
+    t.equal(bar.style.display, '', 'case .bar, first match, display should be empty (visible)');
+    t.equal(barDupe.style.display, '', 'case .bar, second match, should remain empty (visible)');
+    t.equal(baz.style.display, 'none', 'case .baz display shuld be "none"');
+
+    bindings.run('', null, el, 'baz');
+
+    t.equal(foo.style.display, 'none', 'case .foo display should be "none"');
+    t.equal(bar.style.display, 'none', 'case .bar, first match, display should be "none"');
+    t.equal(barDupe.style.display, '', 'case .bar, second match, should remain empty (visible)');
+    t.equal(baz.style.display, '', 'case .baz display should be empty (visible)');
+
+    bindings.run('', null, el, 'something else');
+
+    t.equal(foo.style.display, 'none', 'case .foo display should be "none"');
+    t.equal(bar.style.display, 'none', 'case .bar, first match, display should be "none"');
+    t.equal(barDupe.style.display, '', 'case .bar, second match, should remain empty (visible)');
+    t.equal(baz.style.display, 'none', 'case .baz display shuld be "none"');
+
+    t.end();
+});
