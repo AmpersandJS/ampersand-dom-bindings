@@ -9,7 +9,7 @@ function getMatches(el, selector, firstOnly) {
     if (selector === '') return [el];
     var matches = [];
     if (!selector) return matches;
-    if( firstOnly) {
+    if (firstOnly) {
         if (matchesSelector(el, selector)) return [el];
         return el.querySelector(selector) ? [el.querySelector(selector)] : [];
     } else {
