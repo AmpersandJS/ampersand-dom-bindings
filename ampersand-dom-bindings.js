@@ -8,11 +8,11 @@ var slice = Array.prototype.slice;
 function getMatches(el, selector, firstOnly) {
     if (selector === '') return [el];
     var matches = [];
-    if(!selector) return matches;
-    if(firstOnly) {
+    if (!selector) return matches;
+    if( firstOnly) {
         if (matchesSelector(el, selector)) return [el];
         return el.querySelector(selector) ? [el.querySelector(selector)] : [];
-    }else{
+    } else {
         if (matchesSelector(el, selector)) matches.push(el);
         return matches.concat(slice.call(el.querySelectorAll(selector)));
     }
