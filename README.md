@@ -339,6 +339,34 @@ module.exports = View.extend({
 });
 ```
 
+## firstMatchOnly
+
+As an option you can add `firstMatchOnly: true` to the binding declaration. It will cause
+the selector matcher to grab only the first match.
+
+Useful for cases when a view renders a collection with several elements with the same
+class/data-hook.
+
+```js
+module.exports = View.extend({
+  template: '<div><span data-hook="foo"></span><span data-hook="foo"></span>',
+  props: {
+    someText: 'string'
+  },
+  initialize: function(){
+    this.someText = 'hello';
+  },
+  bindings: {
+    'someText': {
+      type: 'text',
+      hook: 'foo',
+      firstMatchOnly: true
+    }
+  }
+});
+// will render <div><span data-hook="foo">hello</span><span data-hook="foo"></span></div>
+```
+
 ## changelog
 
 - 3.3.1 - Fix issues with yes/no handling in boolean class. Add lots of tests.
