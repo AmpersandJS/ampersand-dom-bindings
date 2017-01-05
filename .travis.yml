@@ -1,4 +1,22 @@
+sudo: false
 language: node_js
-before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+node_js: '4'
+cache:
+  directories: node_modules
+before_script: npm prune
+branches:
+  except: /^v\d+\.\d+\.\d+$/
+notifications:
+  webhooks:
+    urls: https://webhooks.gitter.im/e/df4440290bd89d941fb4
+    on_success: change
+    on_failure: always
+    on_start: false
+  email: false
+script: npm run test-ci
+addons:
+  sauce_connect: true
+env:
+  global:
+  - secure: lz2tMTUyb+woIqwjVUAIqznMH6/stzroH5JrGT5GYmtkBgW6kxOWo+vybRd/tBx0lEhhn7RvyXgeW+r9MA+ABuWfTQGYQleNBK3cKVLtFX38Te4CBxBBg+PMsa9BrWyVqmprgXd75G1ZFQ2TyfYY8/JmxYcFm3iaa2UgWBx0OY0=
+  - secure: CwWLQgcMimjhu2g/mBCu+SnJDfGFDq3hO6vyKrWmovTzavG3cgWbwtxAUVlqwPXlGMAea1yLIMdiXyWO4x6lKOD1TUehE5qREnmZ4kHYU9tnh/rklS+qtJOTFYUEARsWnmVprRiruNapQp4BVR8foq376RtKAND9uxVzwwgAy7s=
