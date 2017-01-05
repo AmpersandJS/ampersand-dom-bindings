@@ -2,7 +2,7 @@
 var Store = require('key-tree-store');
 var dom = require('ampersand-dom');
 var matchesSelector = require('matches-selector');
-var partial = require('lodash.partial');
+var partial = require('lodash/partial');
 var slice = Array.prototype.slice;
 
 function getMatches(el, selector, firstOnly) {
