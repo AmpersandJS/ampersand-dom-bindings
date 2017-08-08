@@ -16,7 +16,7 @@
     "ampersand-dom": "^1.2.5",
     "ampersand-version": "^1.0.0",
     "key-tree-store": "^1.2.0",
-    "lodash": "^4.17.4",
+    "lodash.partial": "^4.2.1",
     "matches-selector": "^1.0.0"
   },
   "devDependencies": {
