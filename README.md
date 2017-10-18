@@ -325,7 +325,7 @@ module.exports = View.extend({
         // for the property that's directly on the view
         'activetab': {
             type: 'switch',
-            case: {
+            cases: {
                 'edit': '#edit_tab',
                 'new': '#new_tab',
                 'details': '#details_tab'
