@@ -367,6 +367,151 @@ module.exports = View.extend({
 // will render <div><span data-hook="foo">hello</span><span data-hook="foo"></span></div>
 ```
 
+# Binding Store
+
+A singleton object containing your current dom bindings. Use the extend method to add your own custom bindings that can be used in any view. 
+
+It's important to extend the binding store before your views run. The recommended way to do this is to include/extend your bindings in your entry point file, such as app.js or main.js.
+
+```js
+// myCustomBindings.js
+
+module.export = {
+    'date': function (binding, selector) {
+        var firstMatchOnly = binding.firstMatchOnly;
+        return function (el, value) {
+            if (!(value instanceof Date)) throw 'binding requires a date type';
+            var date = value.getMonth() + '/' + value.getDay() + '/' + value.getFullYear();
+            utils.getMatches(el, selector, firstMatchOnly).forEach(function (match) {
+                dom.text(match, date);
+            });
+        };
+    },
+}
+```
+
+```js
+// app.js
+var customBindings = require('./myCustomBindings');
+var bindingStore = require('ampersand-dom-bindings/ampersand-binding-store');
+
+bindingStore.extend(customBindings);
+
+// initialize your app...
+```
+
+A cleaner option would be to extend you bindings in another file, and then include that file. 
+
+```js
+// myCustomBindings.js
+var bindingStore = require('ampersand-dom-bindings/ampersand-binding-store');
+
+bindingStore.extend({
+    'date': function (binding, selector) {
+        var firstMatchOnly = binding.firstMatchOnly;
+        return function (el, value) {
+            if (!(value instanceof Date)) throw 'binding requires a date type';
+            var date = value.getMonth() + '/' + value.getDay() + '/' + value.getFullYear();
+            utils.getMatches(el, selector, firstMatchOnly).forEach(function (match) {
+                dom.text(match, date);
+            });
+        };
+    },
+}};
+```
+
+The extend will automatically be evaluated when it is required in app.js.
+
+```js
+// app.js
+var require('./myCustomBindings');
+
+// initialize app
+```
+
+# Binding Function
+
+Binding functions require a specific form to function properly.
+
+```js
+//utils provides some helper functions used in the default bindings.
+var utils = require('ampersand-dom-bindings/libs/util');
+
+var functions = {
+    // binding is a copy of the binding object declared in your view.
+    // selector is the css selector you specified in the binding object (hook/selector).
+    'text': function (binding, selector) { 
+        // The binding function returns a curried function that takes the root element of the view and the value the binding is attached to as arguments.
+        return function (el, value) {
+            // The curried function is called when a change is triggered for the value your binding is listening to in a view.
+
+            // The curried function then runs the selector finding all matches and then manipulates the dom.
+            utils.getMatches(el, selector, firstMatchOnly).forEach(function (match) {
+                match.innerText(value); 
+            });
+        };
+    }
+};
+```
+
+For more examples on how binding functions work, take a look at ampersand-default-bindings.js in this project.
+
+### get
+
+Accessor function which takes a string and returns the corresponding binding function.
+
+### has key
+
+Tests to see if a binding with the passed key exists, returns true if the key exists.
+
+### extend
+
+Extend your bindings by passing objects containing binding functions to this method. The binding store does not allow the default bindings to be overwritten.
+
+```js
+bindingStore.extend({
+    'date': function USADateOverWrite(binding, selector) {
+        var firstMatchOnly = binding.firstMatchOnly;
+        return function (el, value) {
+            if (!(value instanceof Date)) throw 'binding requires a date type';
+            var date = value.getMonth() + '-' + value.getDay() + '-' + value.getFullYear();
+            utils.getMatches(el, selector, firstMatchOnly).forEach(function (match) {
+                dom.text(match, date);
+            });
+        };
+    },
+}};
+```
+### reset
+
+returns your bindings to their default values.
+
+```js
+var bindingStore = require('ampersand-dom-bindings/ampersand-binding-store');
+
+bindingStore.extend({
+    'date': function USADateOverWrite(binding, selector) {
+        var firstMatchOnly = binding.firstMatchOnly;
+        return function (el, value) {
+            if (!(value instanceof Date)) throw 'binding requires a date type';
+            var date = value.getMonth() + '-' + value.getDay() + '-' + value.getFullYear();
+            utils.getMatches(el, selector, firstMatchOnly).forEach(function (match) {
+                dom.text(match, date);
+            });
+        };
+    }
+})
+
+bindingStore.reset(); // resets the contents of the binding store to the default bindings that come with ampersand.
+
+bindingStore.hasKey('date'); //returns false
+
+```
+
+### _bindings
+
+A private property containing your current bindings. Do not access this directly, use the binding store methods instead.
+
 ## changelog
 
 - 3.3.1 - Fix issues with yes/no handling in boolean class. Add lots of tests.
